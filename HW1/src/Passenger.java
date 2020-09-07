@@ -1,3 +1,4 @@
+@Deprecated
 public class Passenger {
     String name;
     String preference;

@@ -7,7 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-
+/**
+ * @author Rohan Surana
+ * @version 1.0.0
+ * @copyright 09-06-2020
+ */
 public class ReservationUtil {
     private final Scanner sc;
     private final ArrayList<Reservation> reservations;
