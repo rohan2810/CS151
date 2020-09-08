@@ -131,8 +131,9 @@ public class ReservationUtil {
         assignedSeat = generateSeatNo(type, i);
         List<String> modifiedList = new ArrayList<>(list);
         modifiedList.remove(list.get(j));
-        first.remove(i + 1);
-        first.put(i + 1, modifiedList);
+        first.replace(i + 1, modifiedList);
+//        first.remove(i + 1);
+//        first.put(i + 1, modifiedList);
         return assignedSeat;
     }
 
@@ -236,7 +237,7 @@ public class ReservationUtil {
             alrExists = true;
             while (fileScanner.hasNext()) {
                 data = fileScanner.nextLine().split(",");
-                System.out.println(Arrays.toString(data));
+                System.out.println(Arrays.toString(data));  // remove me
                 Reservation reservation;
                 if (data.length == 4) {
                     //todo fixme
@@ -340,6 +341,7 @@ public class ReservationUtil {
 //  null pointer on economy while reading from file  --  how to initialize model when loading from file  --fixed
 //  add group support for everything
 //  add documentation
+//  read from command line cl34 and input
 
 
 //todo corner cases
