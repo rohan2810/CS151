@@ -305,6 +305,29 @@ public class ReservationUtil {
         }
     }
 
+    public void updateModelAfterReadingFromFile() {
+        for (Reservation r : reservations) {
+            String seat = r.getSeat();
+            String serviceClass = r.getService_class();
+            if (serviceClass.equals("First")) {
+                HashMap<Integer, List<String>> first = model.getValue();
+                int num = Integer.parseInt(seat.substring(0, 1));
+                List<String> list = first.get(num);
+                List<String> modifiedList = new ArrayList<>(list);
+                modifiedList.remove(seat.substring(1, 2));
+                first.replace(num, modifiedList);
+            } else {
+                //economy
+                HashMap<Integer, List<String>> econ = model.getKey();
+                int num = Integer.parseInt(seat.substring(0, 2));
+                List<String> list = econ.get(num);
+                List<String> modifiedList = new ArrayList<>(list);
+                modifiedList.remove(seat.substring(2, 3));
+                econ.replace(num, modifiedList);
+            }
+        }
+    }
+
 }
 
 // todo basic flow
@@ -314,7 +337,9 @@ public class ReservationUtil {
 //  multiple center seats  -- fixed
 //  fix economy ordering  --fixed
 //  remove error when multiple -- fixed
-//  null pointer on economy while reading from file  --  how to initialize model when loading from file
+//  null pointer on economy while reading from file  --  how to initialize model when loading from file  --fixed
+//  add group support for everything
+//  add documentation
 
 
 //todo corner cases

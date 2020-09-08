@@ -11,8 +11,9 @@ public class ReservationSystem {
 
         ReservationUtil reservation = new ReservationUtil();
         boolean alrExists = reservation.readFromExistingFile();
-        if (!alrExists) {
-            reservation.createNewData();
+        reservation.createNewData();
+        if (alrExists) {
+            reservation.updateModelAfterReadingFromFile();
         }
         Scanner sc = new Scanner(System.in);
         System.out.print("\n\nSelect one of the following options:\n"
