@@ -226,11 +226,11 @@ public class ReservationUtil {
         }
     }
 
-    public boolean readFromExistingFile() throws IOException {
+    public boolean readFromExistingFile(String arg) throws IOException {
 
 
         boolean alrExists = false;
-        File file = new File("Reservations.txt");
+        File file = new File(arg);
         String[] data;
         if (file.exists() && !file.isDirectory()) {
             Scanner fileScanner = new Scanner(file);

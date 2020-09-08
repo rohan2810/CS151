@@ -10,7 +10,7 @@ public class ReservationSystem {
     public static void main(String[] args) throws Exception {
 
         ReservationUtil reservation = new ReservationUtil();
-        boolean alrExists = reservation.readFromExistingFile();
+        boolean alrExists = reservation.readFromExistingFile(args[0]);
         reservation.createNewData();
         if (alrExists) {
             reservation.updateModelAfterReadingFromFile();
