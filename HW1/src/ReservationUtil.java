@@ -131,8 +131,9 @@ public class ReservationUtil {
         assignedSeat = generateSeatNo(type, i);
         List<String> modifiedList = new ArrayList<>(list);
         modifiedList.remove(list.get(j));
-        first.remove(i + 1);
-        first.put(i + 1, modifiedList);
+        first.replace(i + 1, modifiedList);
+//        first.remove(i + 1);
+//        first.put(i + 1, modifiedList);
         return assignedSeat;
     }
 
@@ -236,7 +237,7 @@ public class ReservationUtil {
             alrExists = true;
             while (fileScanner.hasNext()) {
                 data = fileScanner.nextLine().split(",");
-                System.out.println(Arrays.toString(data));
+                System.out.println(Arrays.toString(data));  // remove me
                 Reservation reservation;
                 if (data.length == 4) {
                     //todo fixme
