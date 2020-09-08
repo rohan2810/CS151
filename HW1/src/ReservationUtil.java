@@ -200,30 +200,63 @@ public class ReservationUtil {
 
     public void cancelReservation() {
         System.out.println("Select [I]ndividual or [G]roup");
-        String type = sc.nextLine();  //todo  fixme
-        System.out.println("Enter name");
-        String name = sc.nextLine();
-        boolean removed = false;
-        List<String> seat = new ArrayList<>();
+        String type = sc.nextLine();
 
-
-        for (Iterator<Reservation> iterator = reservations.iterator(); iterator.hasNext(); ) {
-            Reservation value = iterator.next();
-            if (value.getName().equals(name)) {
-                seat.add(value.getSeat());
-                iterator.remove();
-                removed = true;
-                break;
-            } else {
-                removed = false;
+        if (type.equals("I")) {
+            System.out.println("Enter name");
+            String name = sc.nextLine();
+            boolean removed = false;
+            List<String> seat = new ArrayList<>();
+            for (Iterator<Reservation> iterator = reservations.iterator(); iterator.hasNext(); ) {
+                Reservation value = iterator.next();
+                if (value.getName().equals(name)) {
+                    seat.add(value.getSeat());
+                    iterator.remove();
+                    removed = true;
+                    break;
+                } else {
+                    removed = false;
+                }
             }
-        }
 
-        if (!removed) {
-            System.out.println("No such reservation!");
+            if (!removed) {
+                System.out.println("No such reservation!");
+            } else {
+                addAgain(seat);
+                System.out.println("Removed Successfully");
+            }
+        } else if (type.equals("G")) {
+            System.out.println("Enter Group Name");
+            String grpName = sc.nextLine();
+            boolean removed = false;
+            List<String> seat = new ArrayList<>();
+            List<Reservation> allReservations = new ArrayList<>();
+            if (grpMap.containsKey(grpName)) {
+                List<Reservation> grpReservationList = grpMap.get(grpName);
+                for (Iterator<Reservation> grpItr = grpReservationList.iterator(); grpItr.hasNext(); ) {
+                    Reservation value = grpItr.next();
+                    allReservations.add(value);
+                    seat.add(value.getSeat());
+                    grpItr.remove();
+                }
+                for (Reservation r : allReservations) {
+                    reservations.remove(r);
+                    removed = true;
+                }
+
+                if (!removed) {
+                    System.out.println("No such reservation!");
+                } else {
+                    System.out.println(seat);
+                    addAgain(seat);
+                    System.out.println("Removed Successfully");
+                }
+            } else {
+                System.out.println("No reservation found under Group Name: " + grpName + "! .Please try again");
+            }
+
         } else {
-            addAgain(seat);
-            System.out.println("Removed Successfully");
+            System.out.println("Invalid choice! " + type + " is not a valid choice. Try [I]ndividual or [G]roup");
         }
     }
 
@@ -418,6 +451,9 @@ public class ReservationUtil {
 //  read from command line cl34 and input  --fixed
 //  even if no seats are left, it adds as null
 //  fix say no more seats for grp when full
+//  check if null given at any stage
+//  when adding in group it is assigned to last available seats instead of first occurrence
+//  when removing group -- manifest is updated but the availibility is not updated
 
 
 //todo corner cases

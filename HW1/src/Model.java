@@ -37,7 +37,4 @@ public class Model {
         return new Pair<>(economy, business);
     }
 
-    public void createFromExisting() {
-
-    }
 }
