@@ -26,7 +26,7 @@ public class ReservationSystem {
                     break;
                 }
                 case "G": {
-                    System.out.println("helllo");
+                    reservation.addGroup();
                     break;
                 }
                 case "C": {

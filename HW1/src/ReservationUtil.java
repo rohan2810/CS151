@@ -17,11 +17,13 @@ public class ReservationUtil {
     private final Scanner sc;
     private final ArrayList<Reservation> reservations;
     private Pair<HashMap<Integer, List<String>>, HashMap<Integer, List<String>>> model;
+    private Map<String, List<Reservation>> grpMap;
 
 
     public ReservationUtil() {
         sc = new Scanner(System.in);
         reservations = new ArrayList<>();
+        grpMap = new HashMap<>();
     }
 
     public void createNewData() {
@@ -60,9 +62,9 @@ public class ReservationUtil {
                 List<String> list = first.get(i + 1);
                 if (preference.equals("W")) {
                     for (int j = 0; j < list.size(); j++) {
-                        String type = list.get(j);
-                        if ((type.equals("A")) || (type.equals("D"))) {
-                            assignedSeat = getSeatAndUpdateModel(first, i, list, j, type);
+                        String seat = list.get(j);
+                        if ((seat.equals("A")) || (seat.equals("D"))) {
+                            assignedSeat = getSeatAndUpdateModel(first, i, list, j, seat);
                             break outer;
                         }
                     }
@@ -126,9 +128,8 @@ public class ReservationUtil {
 
     }
 
-    private String getSeatAndUpdateModel(HashMap<Integer, List<String>> first, int i, List<String> list, int j, String type) {
-        String assignedSeat;
-        assignedSeat = generateSeatNo(type, i);
+    private String getSeatAndUpdateModel(HashMap<Integer, List<String>> first, int i, List<String> list, int j, String seat) {
+        String assignedSeat = generateSeatNo(seat, i);
         List<String> modifiedList = new ArrayList<>(list);
         modifiedList.remove(list.get(j));
         first.replace(i + 1, modifiedList);
@@ -329,6 +330,79 @@ public class ReservationUtil {
         }
     }
 
+    public void addGroup() throws Exception {
+        System.out.println("Enter Group Name");
+        String groupName = sc.nextLine();
+        System.out.println("Enter Passenger Names");
+        String commaSeparatedNames = sc.nextLine();
+        String[] names = commaSeparatedNames.split(",");
+        System.out.println("Select Class [First] or [Economy]");
+        String service_class = sc.nextLine();
+        List<Reservation> grpReservations = new ArrayList<>();
+        Reservation newReservation;
+        boolean canBeAdded = false;
+        int maxAvailableSeats = 0;
+        if (service_class.equals("First")) {
+            for (int i = 0; i < 2; i++) {
+                maxAvailableSeats += model.getValue().get(i + 1).size();
+            }
+        } else {
+            //economy
+            for (int i = 9; i < 29; i++) {
+                maxAvailableSeats += model.getKey().get(i + 1).size();
+            }
+        }
+        if (names.length <= maxAvailableSeats)
+            canBeAdded = true;
+        else {
+            System.out.println("Sorry! Reservation cannot be made. Not enough seats available1");
+        }
+
+        if (canBeAdded) {
+            for (String name : names) {
+                newReservation = new Reservation(name, assignSeatForGroup(service_class), "G", service_class);
+                reservations.add(newReservation);
+                grpReservations.add(newReservation);
+                reservations.forEach(x -> System.out.println(x.getSeat() + " : " + x.getName())); // remove me
+            }
+            grpMap.put(groupName, grpReservations);
+        }
+    }
+
+    private String assignSeatForGroup(String service_class) throws Exception {
+        String assignedSeat = null;
+        if (service_class.equals("First")) {
+            HashMap<Integer, List<String>> first = model.getValue();
+            for (int i = 0; i < 2; i++) {
+                List<String> list = first.get(i + 1);
+                for (int j = 0; j < list.size(); j++) {
+                    String seat = list.get(j);
+                    assignedSeat = getSeatAndUpdateModel(first, i, list, j, seat);
+                }
+
+            }
+        } else if (service_class.equals("Economy")) {
+            HashMap<Integer, List<String>> econ = model.getKey();
+            for (int i = 9; i < 29; i++) {
+                List<String> list = econ.get(i + 1);
+                for (int j = 0; j < list.size(); j++) {
+                    String seat = list.get(j);
+                    assignedSeat = getSeatAndUpdateModel(econ, i, list, j, seat);
+                }
+            }
+
+        } else
+            throw new Exception("Invalid Input! Was Expecting First or Economy, found " + service_class);
+        return assignedSeat;
+    }
+
+    private String getSeatAndUpdateModelForGroup(HashMap<Integer, List<String>> first, int i, List<String> list, int j, String seat) {
+        String assignedSeat = generateSeatNo(seat, i);
+        List<String> modifiedList = new ArrayList<>(list);
+        modifiedList.remove(list.get(j));
+        first.replace(i + 1, modifiedList);
+        return assignedSeat;
+    }
 }
 
 // todo basic flow
@@ -341,7 +415,9 @@ public class ReservationUtil {
 //  null pointer on economy while reading from file  --  how to initialize model when loading from file  --fixed
 //  add group support for everything
 //  add documentation
-//  read from command line cl34 and input
+//  read from command line cl34 and input  --fixed
+//  even if no seats are left, it adds as null
+//  fix say no more seats for grp when full
 
 
 //todo corner cases
