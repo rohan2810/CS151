@@ -1,12 +1,31 @@
+/**
+ * HOMEWORK 1
+ *
+ * @author Rohan Surana
+ * @version 1.0.0
+ * @copyright 09-09-2020
+ */
+
 import java.util.Scanner;
 
 /**
+ * ReservationSystem class is responsible for testing the solution.
+ * It contains the main method which interacts with the user
+ *
  * @author Rohan Surana
  * @version 1.0.0
- * @copyright 09-06-2020
+ * @copyright 09-09-2020
  */
 public class ReservationSystem {
-
+    /**
+     * This main method is responsible for interacting with the user.
+     * It creates an single instance of ReservationUtil per run which is used for providing the functionality to the user.
+     *
+     * @param args takes the file name as input.
+     *             If the file is present, the model is updated with the reservations in the file.
+     *             If the file is not there, it creates one and updated it at the end of the program.
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
 
         ReservationUtil reservation = new ReservationUtil();
@@ -16,7 +35,7 @@ public class ReservationSystem {
             reservation.updateModelAfterReadingFromFile();
         }
         Scanner sc = new Scanner(System.in);
-        System.out.print("\n\nSelect one of the following options:\n"
+        System.out.print("\nSelect one of the following options:\n"
                 + "Add [P]assenger, Add [G]roup, [C]ancel Reservations, Print Seating [A]vailability Chart, Print [M]anifest, [Q]uit \n");
         while (sc.hasNext()) {
             String operation = sc.nextLine();
@@ -49,7 +68,7 @@ public class ReservationSystem {
                 default:
                     System.out.println("Invalid Option Selected!, Try again");
             }
-            System.out.print("\n\nSelect one of the following options:\n"
+            System.out.print("\nSelect one of the following options:\n"
                     + "Add [P]assenger, Add [G]roup, [C]ancel Reservations, Print Seating [A]vailability Chart, Print [M]anifest, [Q]uit \n");
 
         }
