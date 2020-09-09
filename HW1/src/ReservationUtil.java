@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Rohan Surana
@@ -362,9 +363,12 @@ public class ReservationUtil {
                 int num = Integer.parseInt(seat.substring(0, 1));
                 List<String> modifiedList = model.getValue().get(num);
                 modifiedList.add(seat.substring(1, 2));
-                Set<String> set = new LinkedHashSet<>(modifiedList);
-                modifiedList.clear();
-                modifiedList.addAll(set);
+//                Set<String> set = new LinkedHashSet<>(modifiedList);
+//                modifiedList.clear();
+//                modifiedList.addAll(set);
+                modifiedList = modifiedList.stream()
+                        .distinct()
+                        .collect(Collectors.toList());
                 Collections.sort(modifiedList);
                 List<String> newList = new ArrayList<>(modifiedList);
                 model.getValue().replace(num, newList);
@@ -372,9 +376,12 @@ public class ReservationUtil {
                 int num = Integer.parseInt(seat.substring(0, 2));
                 List<String> modifiedList = model.getKey().get(num);
                 modifiedList.add(seat.substring(2, 3));
-                Set<String> set = new LinkedHashSet<>(modifiedList);
-                modifiedList.clear();
-                modifiedList.addAll(set);
+//                Set<String> set = new LinkedHashSet<>(modifiedList);
+//                modifiedList.clear();
+//                modifiedList.addAll(set);
+                modifiedList = modifiedList.stream()
+                        .distinct()
+                        .collect(Collectors.toList());
                 Collections.sort(modifiedList);
                 List<String> newList = new ArrayList<>(modifiedList);
                 model.getKey().replace(num, newList);
