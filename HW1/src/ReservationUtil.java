@@ -33,7 +33,7 @@ public class ReservationUtil {
 
     public boolean readFromExistingFile(String arg) throws IOException {
 
-
+        List<Reservation> grpReservations = new ArrayList<>();
         boolean alrExists = false;
         File file = new File(arg);
         String[] data;
@@ -44,11 +44,21 @@ public class ReservationUtil {
                 data = fileScanner.nextLine().split(",");
                 System.out.println(Arrays.toString(data));  // remove me
                 Reservation reservation;
-                if (data.length == 4) {
-                    //todo fixme
-                } else {
-                    //business
-                    if (data[0].length() == 2) {
+                if (data.length == 4) { // group reservation
+                    String grpName;
+                    if (data[0].length() == 2) { // first
+                        grpName = data[2];
+                        reservation = new Reservation(data[3], data[0], data[1], "First");
+                        grpReservations.add(reservation);
+                    } else {//economy
+                        grpName = data[2];
+                        reservation = new Reservation(data[3], data[0], data[1], "Economy");
+                        grpReservations.add(reservation);
+                    }
+                    reservations.add(reservation);
+                    grpMap.put(grpName, grpReservations);
+                } else {  // individual
+                    if (data[0].length() == 2) {  // first
                         reservation = new Reservation(data[2], data[0], data[1], "First");
                     } else {//economy
                         reservation = new Reservation(data[2], data[0], data[1], "Economy");
@@ -428,12 +438,30 @@ public class ReservationUtil {
     public void saveToFile() {
         List<String> toWrite = new ArrayList<>();
         for (Reservation res : reservations) {
-            String stringBuilder = res.getSeat() +
-                    ", " +
-                    res.getType() +
-                    " , " +
-                    res.getName();
-            toWrite.add(stringBuilder);
+            if (res.getType().equals("I")) {
+                String stringBuilder = res.getSeat() +
+                        "," +
+                        res.getType() +
+                        "," +
+                        res.getName();
+                toWrite.add(stringBuilder);
+            } else {
+                String key = null;
+                for (Map.Entry<String, List<Reservation>> entry : grpMap.entrySet()) {
+                    if (entry.getValue().contains(res)) {
+                        key = entry.getKey();
+                    }
+                }
+                String stringBuilder = res.getSeat() +
+                        "," +
+                        res.getType() +
+                        "," +
+                        key +
+                        "," +
+                        res.getName();
+
+                toWrite.add(stringBuilder);
+            }
         }
         try {
             Path file = Paths.get("Reservations.txt");
@@ -466,12 +494,13 @@ public class ReservationUtil {
 //  when adding in group it is assigned to last available seats instead of first occurrence --fixed
 //  when removing group -- manifest is updated but the availibility is not updated --fixed
 //   EXTRA  cancel individual reservation within group -- fixed
+//  add group support for everything -- fixed
+//  read from file for group reservation -- fixed
+//  null pointer when manifest for group after cancel  --fixed
 //  even if no seats are left, it adds as null -- individual
-//  add group support for everything
 //  add documentation
 //  check if null given at any stage
-//  read from file for group reservation
-//  null pointer when manifest for group after cancel  --fixed
+
 
 
 //todo corner cases

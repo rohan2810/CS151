@@ -1,0 +1,6 @@
+1A,G,cssjsu,r
+1B,G,cssjsu,s
+1C,G,cssjsu,u
+1D,G,cssjsu,r
+2A,G,cssjsu,a
+2B,I,Ro
