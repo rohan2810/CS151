@@ -1,4 +1,8 @@
 /**
+ * Reservation class represents an reservation.
+ * It contains of identifiers like 'name', 'seat', 'type', 'service_class' which can uniquely identify a reservation.
+ * This class consists of constructor, and getters and setters.
+ *
  * @author Rohan Surana
  * @version 1.0.0
  * @copyright 09-06-2020
@@ -7,14 +11,14 @@
 
 public class Reservation {
     private String name;
-    private String seat;
-    private String type;
+    private String allottedSeat;
+    private String bookingType;
     private String service_class;
 
-    public Reservation(String name, String seat, String type, String service_class) {
+    public Reservation(String name, String allottedSeat, String bookingType, String service_class) {
         this.name = name;
-        this.seat = seat;
-        this.type = type;
+        this.allottedSeat = allottedSeat;
+        this.bookingType = bookingType;
         this.service_class = service_class;
     }
 
@@ -34,27 +38,27 @@ public class Reservation {
         this.name = name;
     }
 
-    public String getSeat() {
-        return seat;
+    public String getAllottedSeat() {
+        return allottedSeat;
     }
 
-    public void setSeat(String seat) {
-        this.seat = seat;
+    public void setAllottedSeat(String allottedSeat) {
+        this.allottedSeat = allottedSeat;
     }
 
-    public String getType() {
-        return type;
+    public String getBookingType() {
+        return bookingType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setBookingType(String bookingType) {
+        this.bookingType = bookingType;
     }
 
     public String print() {
         return "Reservation{" +
                 "name='" + name + '\'' +
-                ", seat='" + seat + '\'' +
-                ", type='" + type + '\'' +
+                ", seat='" + allottedSeat + '\'' +
+                ", type='" + bookingType + '\'' +
                 '}';
     }
 }
