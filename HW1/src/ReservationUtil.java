@@ -41,7 +41,7 @@ public class ReservationUtil {
             Scanner fileScanner = new Scanner(file);
             alrExists = true;
             while (fileScanner.hasNext()) {
-                data = fileScanner.nextLine().split(",");
+                data = fileScanner.nextLine().split(", ");
                 System.out.println(Arrays.toString(data));  // remove me
                 Reservation reservation;
                 if (data.length == 4) { // group reservation
@@ -152,7 +152,7 @@ public class ReservationUtil {
         String groupName = sc.nextLine();
         System.out.println("Enter Passenger Names");
         String commaSeparatedNames = sc.nextLine();
-        String[] names = commaSeparatedNames.split(",");
+        String[] names = commaSeparatedNames.split(", ");
         System.out.println("Select Class [First] or [Economy]");
         String service_class = sc.nextLine();
         List<Reservation> grpReservations = new ArrayList<>();
@@ -440,9 +440,9 @@ public class ReservationUtil {
         for (Reservation res : reservations) {
             if (res.getType().equals("I")) {
                 String stringBuilder = res.getSeat() +
-                        "," +
+                        ", " +
                         res.getType() +
-                        "," +
+                        ", " +
                         res.getName();
                 toWrite.add(stringBuilder);
             } else {
@@ -453,11 +453,11 @@ public class ReservationUtil {
                     }
                 }
                 String stringBuilder = res.getSeat() +
-                        "," +
+                        ", " +
                         res.getType() +
-                        "," +
+                        ", " +
                         key +
-                        "," +
+                        ", " +
                         res.getName();
 
                 toWrite.add(stringBuilder);
@@ -465,6 +465,7 @@ public class ReservationUtil {
         }
         try {
             Path file = Paths.get("Reservations.txt");
+            Collections.sort(toWrite);
             Files.write(file, toWrite, StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
@@ -500,7 +501,6 @@ public class ReservationUtil {
 //  even if no seats are left, it adds as null -- individual
 //  add documentation
 //  check if null given at any stage
-
 
 
 //todo corner cases

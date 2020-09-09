@@ -1,6 +1,37 @@
-1A,G,cssjsu,r
-1B,G,cssjsu,s
-1C,G,cssjsu,u
-1D,G,cssjsu,r
-2A,G,cssjsu,a
-2B,I,Ro
+2D, I, Rohan
+2B, I, Ro
+2A, G, cs11, a
+1D, G, cs11, r
+1C, G, cs11, u
+1B, G, cs11, s
+1A, G, cs11, r
+15C, I, sefnsjl
+14E, G, cs11, dsf
+14D, G, cs11, dsf
+14C, G, cs11, df
+14B, G, cs11, dsf
+14A, G, cs11, kd
+13F, G, cs11, dfsd
+13E, G, cs11, dsf
+13D, G, cs11, sdf
+13C, G, cs11, F
+13B, G, cs11, df
+13A, G, cs11, sdf
+12F, G, cs11, sdf
+12E, G, cs11, df
+12D, G, cs11, dsf
+12C, G, cs11, r,dsf,sdf,sdf
+12B, G, cs11, Thomas Labrie
+12A, G, cs11, Helen Garrett
+11F, G, cs11, Carole Williams
+11E, G, cs11, Denny Clark
+11D, G, cs11, Kevin Jackson
+11C, G, cs11, William Morton
+11B, G, cs11, Robt Burks
+11A, G, cs11, Thomas Labrie
+10F, G, cs11, Helen Garrett
+10E, G, cs11, Carole Williams
+10D, G, cs11, Denny Clark
+10C, G, cs11, Kevin Jackson
+10B, G, cs11, William Morton
+10A, G, cs11, Robt Burks
