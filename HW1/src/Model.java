@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author Rohan Surana
  * @version 1.0.0
- * @copyright 09-06-2020
+ * @copyright 09-09-2020
  */
 public class Model {
     static Pair<HashMap<Integer, List<String>>, HashMap<Integer, List<String>>> createNewStr() {

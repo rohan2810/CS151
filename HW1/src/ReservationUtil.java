@@ -103,7 +103,7 @@ public class ReservationUtil {
 
     public void updateModelAfterReadingFromFile() {
         for (Reservation r : reservations) {
-            String seat = r.getSeat();
+            String seat = r.getAllottedSeat();
             String serviceClass = r.getService_class();
             if (serviceClass.equals("First")) {
                 HashMap<Integer, List<String>> first = model.getValue();
@@ -157,7 +157,7 @@ public class ReservationUtil {
             Reservation newReservation = new Reservation(name, assignSeat(service_class, preference), "I", service_class);
             reservations.add(newReservation);
             System.out.println(reservations.size());
-            reservations.forEach(x -> System.out.println(x.getSeat() + " : " + x.getName()));
+            reservations.forEach(x -> System.out.println(x.getAllottedSeat() + " : " + x.getName()));
         } else {
             System.out.println("No more seats available for this particular choice. Please try again!");
         }
@@ -197,7 +197,7 @@ public class ReservationUtil {
                 newReservation = new Reservation(name, assignSeatForGroup(service_class), "G", service_class);
                 reservations.add(newReservation);
                 grpReservations.add(newReservation);
-                reservations.forEach(x -> System.out.println(x.getSeat() + " : " + x.getName())); // remove me
+                reservations.forEach(x -> System.out.println(x.getAllottedSeat() + " : " + x.getName())); // remove me
             }
             grpMap.put(groupName, grpReservations);
         }
@@ -334,7 +334,7 @@ public class ReservationUtil {
             for (Iterator<Reservation> iterator = reservations.iterator(); iterator.hasNext(); ) {
                 Reservation value = iterator.next();
                 if (value.getName().equals(name)) {
-                    seat.add(value.getSeat());
+                    seat.add(value.getAllottedSeat());
                     iterator.remove();
                     removed = true;
                     break;
@@ -360,7 +360,7 @@ public class ReservationUtil {
                 for (Iterator<Reservation> grpItr = grpReservationList.iterator(); grpItr.hasNext(); ) {
                     Reservation value = grpItr.next();
                     allReservations.add(value);
-                    seat.add(value.getSeat());
+                    seat.add(value.getAllottedSeat());
                     grpItr.remove();
                 }
                 for (Reservation r : allReservations) {
@@ -423,7 +423,7 @@ public class ReservationUtil {
         reservations.sort(new CompareReservation());
         for (Reservation reservation : reservations) {
             if (reservation.getService_class().equals(service_class)) {
-                String manifest = reservation.getSeat() +
+                String manifest = reservation.getAllottedSeat() +
                         ": " +
                         reservation.getName();
 
@@ -455,10 +455,10 @@ public class ReservationUtil {
     public void saveToFile() {
         List<String> toWrite = new ArrayList<>();
         for (Reservation res : reservations) {
-            if (res.getType().equals("I")) {
-                String stringBuilder = res.getSeat() +
+            if (res.getBookingType().equals("I")) {
+                String stringBuilder = res.getAllottedSeat() +
                         ", " +
-                        res.getType() +
+                        res.getBookingType() +
                         ", " +
                         res.getName();
                 toWrite.add(stringBuilder);
@@ -469,9 +469,9 @@ public class ReservationUtil {
                         key = entry.getKey();
                     }
                 }
-                String stringBuilder = res.getSeat() +
+                String stringBuilder = res.getAllottedSeat() +
                         ", " +
-                        res.getType() +
+                        res.getBookingType() +
                         ", " +
                         key +
                         ", " +
