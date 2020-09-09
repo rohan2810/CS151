@@ -10,10 +10,12 @@ import java.util.Comparator;
  */
 public class CompareReservation implements Comparator<Reservation> {
     /**
-     * This compare method is an overridden
-     * @param r1
-     * @param r2
-     * @return
+     * This compare method is an overridden method from Comparator interface.
+     * It compares two reservations on basis of their allotted seat.
+     *
+     * @param r1 First reservation
+     * @param r2 Second reservation
+     * @return the result of the comparison (-1,0,1)
      */
     @Override
     public int compare(Reservation r1, Reservation r2) {

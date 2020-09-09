@@ -10,27 +10,51 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * Reservation Util class handles all the backend logic for this solution.
+ * It is responsible to providing the functionality to the user.
+ *
  * @author Rohan Surana
  * @version 1.0.0
  * @copyright 09-06-2020
  */
 public class ReservationUtil {
+
     private final Scanner sc;
     private final ArrayList<Reservation> reservations;
     private Pair<HashMap<Integer, List<String>>, HashMap<Integer, List<String>>> model;
     private Map<String, List<Reservation>> grpMap;
 
-
+    /**
+     * Constructor for the Reservation Util class.
+     * It initializes the following:
+     * Scanner
+     * ArrayList of Reservation  --> stores all the reservations
+     * Map <String, List<Reservation>>  -->
+     *      Key   (String) : Group Name
+     *      Value (List<Reservation>) : Reservations linked to the group name(key)
+     */
     public ReservationUtil() {
         sc = new Scanner(System.in);
         reservations = new ArrayList<>();
         grpMap = new HashMap<>();
     }
 
+    /**
+     * This method is used to create a new Model
+     * This is called at every run
+     */
     public void createNewData() {
         this.model = Model.createNewStr();
     }
 
+    /**
+     * This method is responsible for reading the reservations from the existing file.
+     * It reads the file in a particular format and generate reservations from it and store them in the appropriate list or map.
+     *
+     * @param arg File: file to read reservations from
+     * @return alrExists(boolean) : return true if the file exists, false if does not exists(int he case of first run)
+     * @throws IOException
+     */
     public boolean readFromExistingFile(String arg) throws IOException {
 
         List<Reservation> grpReservations = new ArrayList<>();
@@ -67,40 +91,15 @@ public class ReservationUtil {
                 }
             }
         } else {
-            System.out.println("not exists");
+            System.out.println("This is the first run! Any previous records not found.");
         }
-//        boolean k = file.createNewFile(); // if file already exists will do nothing
-//        FileOutputStream outFile = new FileOutputStream(file, false);
-
-
-//        boolean alrExists = false;
-//        Reservation reservation;
-//        File file = new File("Reservations.txt");
-//        if (!file.exists()) {
-//            System.out.println("No such file found, Possible reasons: First Run, or No such file exists");
-//        } else {
-//            try {
-//                FileInputStream fileInputStream = new FileInputStream(file);
-//                ObjectInputStream objInpStream = new ObjectInputStream(fileInputStream);
-//                while (fileInputStream.available() > 0) {
-//                    reservation = (Reservation) objInpStream.readObject();
-//                    reservations.add(reservation);
-//                }
-//                if (fileInputStream.available() > 0) {
-//                    System.out.println("Previous Reservations Loaded!");
-//                    alrExists = true;
-//                } else {
-//                    System.out.println("No reservations found!");
-//                }
-//                fileInputStream.close();
-//                objInpStream.close();
-//            } catch (IOException | ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        }
         return alrExists;
     }
 
+    /**
+     * This method is used for updating the data structure for the program.
+     * After reading the file and generating the reservations out of it, this method is called to update the data structure(model) for the program.
+     */
     public void updateModelAfterReadingFromFile() {
         for (Reservation r : reservations) {
             String seat = r.getAllottedSeat();
@@ -124,6 +123,12 @@ public class ReservationUtil {
         }
     }
 
+    /**
+     * This method is responsible for generating a reservation for an individual passenger.
+     * It is called when user requests to add an passenger
+     *
+     * @throws Exception
+     */
     public void addPassenger() throws Exception {
         System.out.println("Enter Name");
         String name = sc.nextLine();
@@ -164,6 +169,12 @@ public class ReservationUtil {
 
     }
 
+    /**
+     * This method is responsible for generating a reservation for an all passengers on the group.
+     * It is called when user requests to add a group reservation
+     *
+     * @throws Exception
+     */
     public void addGroup() throws Exception {
         System.out.println("Enter Group Name");
         String groupName = sc.nextLine();
@@ -203,6 +214,14 @@ public class ReservationUtil {
         }
     }
 
+    /**
+     * This is an supplement method which is used by 'addPassenger' method for assigning seat to a reservation request.
+     *
+     * @param service_class requested service class: First or Economy
+     * @param preference    Seat preference : W and A in case of First class && W, C, and A for the Economy class.
+     * @return the assignedSeat : (Column + Row)
+     * @throws Exception
+     */
     private String assignSeat(String service_class, String preference) throws Exception {
         String assignedSeat = null;
         if (service_class.equals("First")) {
@@ -278,6 +297,13 @@ public class ReservationUtil {
 
     }
 
+    /**
+     * This is an supplement method which is used by 'addGroup' method for assigning seat to a reservation request for a group.
+     *
+     * @param service_class the requested service class: First or Economy
+     * @return assignedSeat the assignedSeat : (Column + Row)
+     * @throws Exception
+     */
     private String assignSeatForGroup(String service_class) throws Exception {
         String assignedSeat = null;
         int booked = 0;
@@ -304,12 +330,17 @@ public class ReservationUtil {
                     break outer;
                 }
             }
-
         } else
             throw new Exception("Invalid Input! Was Expecting First or Economy, found " + service_class);
         return assignedSeat;
     }
 
+    /**
+     * This is an supplement method which is used by the 'assignSeat' method.
+     * It is responsible for generating the seatNo for the request and updating the data structure(model) for the program.
+     *
+     * @return the assignedSeat
+     */
     private String getSeatAndUpdateModel(HashMap<Integer, List<String>> first, int i, List<String> list, int j, String seat) {
         String assignedSeat = generateSeatNo(seat, i);
         List<String> modifiedList = new ArrayList<>(list);
@@ -318,10 +349,23 @@ public class ReservationUtil {
         return assignedSeat;
     }
 
+    /**
+     * This method is used for generating the seatNo. for an request.
+     *
+     * @param key The row
+     * @param i   The column
+     * @return the generated SeatNo. For eg. (1B, 15E)
+     */
     private String generateSeatNo(String key, int i) {
         return i + 1 + key;
     }
 
+    /**
+     * This method is called when the user inputs 'C' to cancel the reservation.
+     * It prompts the user to enter individual or group cancellation.
+     * If individual is selected, it asks for the name provided while making the reservation, and then cancels the particular reservation if exists and add the cancelled seat to the model.
+     * If group is selected, it asks for the group name provided while making the reservation, and then cancels all the reservations under the group name if exists and add the cancelled seats to the model.
+     */
     public void cancelReservation() {
         System.out.println("Select [I]ndividual or [G]roup");
         String type = sc.nextLine();
@@ -384,6 +428,12 @@ public class ReservationUtil {
         }
     }
 
+    /**
+     * This is an supplement method which is used by the 'cancelReservation' method.
+     * It is responsible for adding all the seats from the cancelled reservations to the model again.
+     *
+     * @param toAdd List of cancelled reservations, which are used to add the cancelled seats to the model again.
+     */
     private void addAgain(List<String> toAdd) {
         for (String seat : toAdd) {
             if (seat.length() == 2) {
@@ -416,6 +466,10 @@ public class ReservationUtil {
         }
     }
 
+    /**
+     * This method is called when the user inputs 'M' to get all the current reservations details of a particular service class.
+     * it is responsible for printing the reservations for a particular service class(requested from the user) to the console.
+     */
     public void printManifest() {
         System.out.println("Select Class [First] or [Economy]");
         String service_class = sc.nextLine();
@@ -432,6 +486,10 @@ public class ReservationUtil {
         }
     }
 
+    /**
+     * This method is called when the user input 'A' to get the availability of a particular service class.
+     * It is responsible for printing out the current state of the model or the available seats for a particular service class(requested from the user) to the console.
+     */
     public void getAvailability() {
         System.out.println("Select Class [First] or [Economy]");
         String service_class = sc.nextLine();
@@ -452,6 +510,10 @@ public class ReservationUtil {
         }
     }
 
+    /**
+     * This method is called when the user inputs 'Q'.
+     * It is responsible for writing all the reservations in a particular format to the file.
+     */
     public void saveToFile() {
         List<String> toWrite = new ArrayList<>();
         for (Reservation res : reservations) {
@@ -489,6 +551,10 @@ public class ReservationUtil {
         }
     }
 
+    /**
+     * Used for generating the seatNo for the reservation and updating the model.
+     */
+    @Deprecated
     private String getSeatAndUpdateModelForGroup(HashMap<Integer, List<String>> first, int i, List<String> list, int j, String seat) {
         String assignedSeat = generateSeatNo(seat, i);
         List<String> modifiedList = new ArrayList<>(list);
@@ -516,7 +582,7 @@ public class ReservationUtil {
 //  read from file for group reservation -- fixed
 //  null pointer when manifest for group after cancel  --fixed
 //  even if no seats are left, it adds as null -- individual -- FIXED
-//  add documentation
+//  add documentation  --fixed
 //  check if null given at any stage
 
 

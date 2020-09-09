@@ -5,11 +5,28 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * This class creates a structure for the plane.
+ *
  * @author Rohan Surana
  * @version 1.0.0
  * @copyright 09-09-2020
  */
 public class Model {
+    /**
+     * This static method(createNewStr) is responsible for creating a new Data Structure for the plane model.
+     * The structure is as follow:
+     *          Pair :
+     *             Right:  (First)       -> HashMap<Integer, List<String>>   ==>
+     *                                          -> Integer          => Column: ( 1, 2 ) for first class
+     *                                          -> List of String   => Rows: (A,B,C,D) for first class
+     *
+     *             Left: (Economy)      -> HashMap<Integer, List<String>>  ==>
+     *                                           -> Integer          => Column: ( 10, 11, 12 ... 28, 29 ) for economy class
+     *                                           -> List of String   => Rows: ( A,B,C,D,E,F ) for economy class
+     *
+     *
+     * @return model --> Pair<HashMap<Integer, List<String>>, HashMap<Integer, List<String>>>
+     */
     static Pair<HashMap<Integer, List<String>>, HashMap<Integer, List<String>>> createNewStr() {
         List<String> econ = new LinkedList<>();
         econ.add("A");
@@ -26,15 +43,15 @@ public class Model {
         bus.add("D");
 
         HashMap<Integer, List<String>> economy = new HashMap<>();
-        HashMap<Integer, List<String>> business = new HashMap<>();
+        HashMap<Integer, List<String>> first = new HashMap<>();
 
         for (int i = 0; i < 2; i++) {
-            business.put(i + 1, bus);
+            first.put(i + 1, bus);
         }
         for (int i = 9; i < 29; i++) {
             economy.put(i + 1, econ);
         }
-        return new Pair<>(economy, business);
+        return new Pair<>(economy, first);
     }
 
 }
