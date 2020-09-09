@@ -130,20 +130,37 @@ public class ReservationUtil {
         System.out.println("Select Class [First] or [Economy]");
         String service_class = sc.nextLine();
         String preference = null;
+        int maxAvailableSeats = 0;
+        boolean canBeAdded = false;
         if (service_class.equals("First")) {
+            for (int i = 0; i < 2; i++) {
+                maxAvailableSeats += model.getValue().get(i + 1).size();
+            }
+            if (maxAvailableSeats > 0) {
+                canBeAdded = true;
+            }
             System.out.println("Select preference [A]isle [W]indow");
             preference = sc.nextLine();
         } else if (service_class.equals("Economy")) {
+            for (int i = 9; i < 29; i++) {
+                maxAvailableSeats += model.getKey().get(i + 1).size();
+            }
+            if (maxAvailableSeats > 0) {
+                canBeAdded = true;
+            }
             System.out.println("Select preference [A]isle [W]indow [C]enter");
             preference = sc.nextLine();
         } else {
             System.out.println("Invalid Selection!, Try again");
         }
-
-        Reservation newReservation = new Reservation(name, assignSeat(service_class, preference), "I", service_class);
-        reservations.add(newReservation);
-        System.out.println(reservations.size());
-        reservations.forEach(x -> System.out.println(x.getSeat() + " : " + x.getName()));
+        if (canBeAdded) {
+            Reservation newReservation = new Reservation(name, assignSeat(service_class, preference), "I", service_class);
+            reservations.add(newReservation);
+            System.out.println(reservations.size());
+            reservations.forEach(x -> System.out.println(x.getSeat() + " : " + x.getName()));
+        } else {
+            System.out.println("No more seats available for this particular choice. Please try again!");
+        }
 
     }
 
@@ -498,7 +515,7 @@ public class ReservationUtil {
 //  add group support for everything -- fixed
 //  read from file for group reservation -- fixed
 //  null pointer when manifest for group after cancel  --fixed
-//  even if no seats are left, it adds as null -- individual
+//  even if no seats are left, it adds as null -- individual -- FIXED
 //  add documentation
 //  check if null given at any stage
 
