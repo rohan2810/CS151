@@ -362,6 +362,9 @@ public class ReservationUtil {
                 int num = Integer.parseInt(seat.substring(0, 1));
                 List<String> modifiedList = model.getValue().get(num);
                 modifiedList.add(seat.substring(1, 2));
+                Set<String> set = new LinkedHashSet<>(modifiedList);
+                modifiedList.clear();
+                modifiedList.addAll(set);
                 Collections.sort(modifiedList);
                 List<String> newList = new ArrayList<>(modifiedList);
                 model.getValue().replace(num, newList);
@@ -369,6 +372,9 @@ public class ReservationUtil {
                 int num = Integer.parseInt(seat.substring(0, 2));
                 List<String> modifiedList = model.getKey().get(num);
                 modifiedList.add(seat.substring(2, 3));
+                Set<String> set = new LinkedHashSet<>(modifiedList);
+                modifiedList.clear();
+                modifiedList.addAll(set);
                 Collections.sort(modifiedList);
                 List<String> newList = new ArrayList<>(modifiedList);
                 model.getKey().replace(num, newList);
@@ -447,17 +453,20 @@ public class ReservationUtil {
 //  fix economy ordering  --fixed
 //  remove error when multiple -- fixed
 //  null pointer on economy while reading from file  --  how to initialize model when loading from file  --fixed
-//  add group support for everything
-//  add documentation
 //  read from command line cl34 and input  --fixed
-//  even if no seats are left, it adds as null -- individual
 //  even if no seats are left, it adds as null -- group -- fixed
 //  fix say no more seats for grp when full -- fixed
-//  check if null given at any stage
 //  when adding in group it is assigned to last available seats instead of first occurrence --fixed
 //  when removing group -- manifest is updated but the availibility is not updated --fixed
+//   EXTRA  cancel individual reservation within group -- fixed
+//  even if no seats are left, it adds as null -- individual
+//  add group support for everything
+//  add documentation
+//  check if null given at any stage
 //  read from file for group reservation
+//  null pointer when manifest for group after cancel  --fixed
 
 
 //todo corner cases
 // reservation with same names cancellation?
+// cancel individual reservation within group  -- fixed
