@@ -139,23 +139,53 @@ public class ReservationUtil {
         int maxAvailableSeats = 0;
         boolean canBeAdded = false;
         if (service_class.equals("First")) {
-            for (int i = 0; i < 2; i++) {
-                maxAvailableSeats += model.getValue().get(i + 1).size();
-            }
-            if (maxAvailableSeats > 0) {
-                canBeAdded = true;
-            }
             System.out.println("Select preference [A]isle [W]indow");
             preference = sc.nextLine();
-        } else if (service_class.equals("Economy")) {
-            for (int i = 9; i < 29; i++) {
-                maxAvailableSeats += model.getKey().get(i + 1).size();
+            for (int i = 0; i < 2; i++) {
+                if (preference.equals("W")) {
+                    for (int j = 0; j < model.getValue().get(i + 1).size(); j++) {
+                        if (model.getValue().get(i + 1).get(j).equals("A") || (model.getValue().get(i + 1).get(j).equals("D"))) {
+                            maxAvailableSeats++;
+                        }
+                    }
+                } else {
+                    for (int j = 0; j < model.getValue().get(i + 1).size(); j++) {
+                        if (model.getValue().get(i + 1).get(j).equals("B") || (model.getValue().get(i + 1).get(j).equals("C"))) {
+                            maxAvailableSeats++;
+                        }
+                    }
+                }
             }
             if (maxAvailableSeats > 0) {
                 canBeAdded = true;
             }
+        } else if (service_class.equals("Economy")) {
             System.out.println("Select preference [A]isle [W]indow [C]enter");
             preference = sc.nextLine();
+            for (int i = 9; i < 29; i++) {
+                if (preference.equals("W")) {
+                    for (int j = 0; j < model.getKey().get(i + 1).size(); j++) {
+                        if (model.getKey().get(i + 1).get(j).equals("A") || (model.getKey().get(i + 1).get(j).equals("F"))) {
+                            maxAvailableSeats++;
+                        }
+                    }
+                } else if (preference.equals("C")) {
+                    for (int j = 0; j < model.getKey().get(i + 1).size(); j++) {
+                        if (model.getKey().get(i + 1).get(j).equals("E") || (model.getKey().get(i + 1).get(j).equals("B"))) {
+                            maxAvailableSeats++;
+                        }
+                    }
+                } else {
+                    for (int j = 0; j < model.getKey().get(i + 1).size(); j++) {
+                        if (model.getKey().get(i + 1).get(j).equals("C") || (model.getKey().get(i + 1).get(j).equals("D"))) {
+                            maxAvailableSeats++;
+                        }
+                    }
+                }
+            }
+            if (maxAvailableSeats > 0) {
+                canBeAdded = true;
+            }
         } else {
             System.out.println("Invalid Selection!, Try again");
         }
@@ -204,14 +234,17 @@ public class ReservationUtil {
             System.out.println("Sorry! Reservation cannot be made. Not enough seats available1");
         }
 
-        if (canBeAdded) {
+        if (canBeAdded && !grpMap.containsKey(groupName)) {
             for (String name : names) {
                 newReservation = new Reservation(name, assignSeatForGroup(service_class), "G", service_class);
                 reservations.add(newReservation);
                 grpReservations.add(newReservation);
                 reservations.forEach(x -> System.out.println(x.getAllottedSeat() + " : " + x.getName())); // remove me
             }
-            grpMap.put(groupName, grpReservations);
+            if (grpMap.containsKey(groupName)) {
+                System.out.println("Group with same name exists! Try Again");
+            } else
+                grpMap.put(groupName, grpReservations);
         }
     }
 
