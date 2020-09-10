@@ -28,13 +28,13 @@ public class ReservationSystem {
      */
     public static void main(String[] args) throws Exception {
 
-        ReservationUtil reservation = new ReservationUtil();
+        Scanner sc = new Scanner(System.in);
+        ReservationUtil reservation = new ReservationUtil(sc);
         boolean alrExists = reservation.readFromExistingFile(args[0]);
         reservation.createNewData();
         if (alrExists) {
             reservation.updateModelAfterReadingFromFile();
         }
-        Scanner sc = new Scanner(System.in);
         System.out.print("\nSelect one of the following options:\n"
                 + "Add [P]assenger, Add [G]roup, [C]ancel Reservations, Print Seating [A]vailability Chart, Print [M]anifest, [Q]uit \n");
         while (sc.hasNext()) {

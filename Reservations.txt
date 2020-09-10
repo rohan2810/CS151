@@ -1,43 +1,7 @@
-10A, G, cs11, Robt Burks
-10B, G, cs11, William Morton
-10C, G, cs11, Kevin Jackson
-10D, G, cs11, Denny Clark
-10E, G, cs11, Carole Williams
-10F, G, cs11, Helen Garrett
-11A, G, cs11, Thomas Labrie
-11B, G, cs11, Robt Burks
-11C, G, cs11, William Morton
-11D, G, cs11, Kevin Jackson
-11E, G, cs11, Denny Clark
-11F, G, cs11, Carole Williams
-12A, G, cs11, Helen Garrett
-12B, G, cs11, Thomas Labrie
-12C, G, cs11, r,dsf,sdf,sdf
-12D, G, cs11, dsf
-12E, G, cs11, df
-12F, G, cs11, sdf
-13A, G, cs11, sdf
-13B, G, cs11, df
-13C, G, cs11, F
-13D, G, cs11, sdf
-13E, G, cs11, dsf
-13F, G, cs11, dfsd
-14A, G, cs11, kd
-14B, G, cs11, dsf
-14C, G, cs11, df
-14D, G, cs11, dsf
-14E, G, cs11, dsf
-14F, G, cs11, djf
-15A, G, cs11, ds
-15B, G, cs11, asjh 
-15C, I, sefnsjl
-15D, G, cs11, ajshdf 
-15E, I, rp
-1A, G, cs11, r
-1B, G, cs11, s
-1C, G, cs11, u
-1D, G, cs11, r
-2A, G, cs11, a
-2B, I, Ro
-2C, I, rohan
-2D, I, Rohan
+10A, G, cssjsu, Birdie Ross
+10B, G, cssjsu, David Johnson
+10C, G, cssjsu, Aldo Luce
+10E, I, Jackie Meador
+10F, I, Karri Johnson
+1D, I, Henry Barron
+2A, I, Helen Garrett

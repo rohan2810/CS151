@@ -32,9 +32,10 @@ public class ReservationUtil {
      * Map <String, List<Reservation>>  -->
      *      Key   (String) : Group Name
      *      Value (List<Reservation>) : Reservations linked to the group name(key)
+     * @param sc scanner
      */
-    public ReservationUtil() {
-        sc = new Scanner(System.in);
+    public ReservationUtil(Scanner sc) {
+        this.sc = sc;
         reservations = new ArrayList<>();
         grpMap = new HashMap<>();
     }
