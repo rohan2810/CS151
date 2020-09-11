@@ -340,7 +340,6 @@ public class ReservationUtil {
      */
     private String assignSeatForGroup(String service_class) throws Exception {
         String assignedSeat = null;
-        int booked = 0;
         if (service_class.equals("First")) {
             HashMap<Integer, List<String>> first = model.getValue();
             outer:
@@ -596,6 +595,204 @@ public class ReservationUtil {
         first.replace(i + 1, modifiedList);
         return assignedSeat;
     }
+//
+//
+//    public void newAddGroup() throws Exception {
+//        System.out.println("Enter Group Name");
+//        String groupName = sc.nextLine();
+//        System.out.println("Enter Passenger Names");
+//        String commaSeparatedNames = sc.nextLine();
+//        String[] names = commaSeparatedNames.split(", ");
+//        System.out.println("Select Class [First] or [Economy]");
+//        String service_class = sc.nextLine();
+//        List<Reservation> grpReservations = new ArrayList<>();
+//        Reservation newReservation;
+//        boolean canBeAdded = false;
+//        int maxAvailableSeats = 0;
+//        if (service_class.equals("First")) {
+//            for (int i = 0; i < 2; i++) {
+//                maxAvailableSeats += model.getValue().get(i + 1).size();
+//            }
+//        } else {//economy
+//            for (int i = 9; i < 29; i++) {
+//                maxAvailableSeats += model.getKey().get(i + 1).size();
+//            }
+//        }
+//        if (names.length <= maxAvailableSeats)
+//            canBeAdded = true;
+//        else {
+//            System.out.println("Sorry! Reservation cannot be made. Not enough seats available1");
+//        }
+//        List<String> seats = new ArrayList<>();
+//        if (canBeAdded && !grpMap.containsKey(groupName)) {
+//            Pair<Integer, List<Character>> pair = generateAdjacentBooking(names, service_class, groupName);
+//            if (pair != null) {
+//                for (int i = 0; i < pair.getValue().size(); i++) {
+//                    seats.add(String.valueOf(pair.getKey()) + pair.getValue().get(i));
+//                }
+//                for (int i = 0; i < names.length; i++) {
+//                    String name = names[i];
+//                    newReservation = new Reservation(name, seats.get(i), "G", service_class);
+//                    reservations.add(newReservation);
+//                    grpReservations.add(newReservation);
+//                    reservations.forEach(x -> System.out.println(x.getAllottedSeat() + " : " + x.getName())); // remove me
+//                    if (service_class.equals("First")) {
+//                        HashMap<Integer, List<String>> first = model.getValue();
+//                        List<String> list = first.get(pair.getKey());
+//                        List<String> modifiedList = new ArrayList<>(list);
+//                        modifiedList.remove(seats.get(i).substring(1, 2));
+//                        first.replace(Integer.parseInt(seats.get(i).substring(0, 1)), modifiedList);
+//                    } else {//economy
+//                        HashMap<Integer, List<String>> first = model.getKey();
+//                        List<String> list = first.get(pair.getKey());
+//                        List<String> modifiedList = new ArrayList<>(list);
+//                        modifiedList.remove(seats.get(i).substring(2, 3));
+//                        first.replace(Integer.parseInt(seats.get(i).substring(0, 2)), modifiedList);
+//                    }
+//                }
+//                if (grpMap.containsKey(groupName)) {
+//                    System.out.println("Group with same name exists! Try Again");
+//                } else
+//                    grpMap.put(groupName, grpReservations);
+//            }
+//        }
+//
+//
+//    }
+//
+//    private Pair<Integer, List<Character>> generateAdjacentBooking(String[] names, String service_class, String groupName) throws Exception {
+//        boolean nullReturn = false;
+//        boolean nothingCanBeDone = false;
+//        List<String> seats = new ArrayList<>();
+//        int col = 0;
+//        if (service_class.equals("First")) {
+//            HashMap<Integer, List<String>> first = model.getValue();
+//            for (int i = 0; i < 2; i++) {
+//                List<String> list = first.get(i + 1);
+//                Pair<String, Boolean> pair = isOrdered(names, list);
+//                if (pair.getValue()) {
+//                    seats.add(pair.getKey());
+//                    col = i + 1;
+//
+////                    break;
+//                } else {
+//                    if (i == 1) {
+//                        nothingCanBeDone = true;
+//                    }
+//                }
+//            }
+//            if (nothingCanBeDone) {
+//                nullReturn = true;
+//                addModifiedGrp(names, service_class, groupName);
+//            }
+//        } else {//economy
+//            HashMap<Integer, List<String>> econ = model.getKey();
+//            for (int i = 9; i < 29; i++) {
+//                List<String> list = econ.get(i + 1);
+//                Pair<String, Boolean> pair = isOrdered(names, list);
+//                if (pair.getValue()) {
+//                    seats.add(pair.getKey());
+//                    col = i + 1;
+//                    break;
+//                }
+//            }
+//        }
+//        if (!nullReturn) {
+//            List<Character> cha = new ArrayList<>();
+//            String seat = seats.get(0);
+//            for (int i = 0; i < seat.length(); i++) {
+//                cha.add(seat.charAt(i));
+//            }
+//            return new Pair<>(col, cha);
+//        } else {
+//            return null;
+//        }
+//    }
+//
+//    private Pair<String, Boolean> isOrdered(String[] names, List<String> list) {
+//        StringBuilder str = new StringBuilder();
+//        boolean isSequenced;
+//        for (int j = 0; j < list.size(); j++) {
+//            str.append(list.get(j));
+//        }
+//        boolean l = isInSequence(str.toString().toCharArray());
+//        isSequenced = l;
+//        return new Pair<>(str.toString(), isSequenced);
+//
+//    }
+//
+//    //    private Pair<String, Boolean> isInSequence(char[] s) {
+////        StringBuilder b = new StringBuilder();
+////        List<Character> ch = new ArrayList<>();
+////        for (char c : s) {
+////            ch.add(c);
+////        }
+////        int l = s.length;
+////        Arrays.sort(s);
+////        if (s.length >= 2) {
+////            for (int i = 1; i < l; i++) {
+////                if (ch.get(i) - ch.get(i - 1) != 1) {
+////                    ch.remove(i - 1);
+////                    char[] myCharArray = new char[ch.size()];
+////                    for (int j = 0; j < ch.size(); j++) {
+////                        myCharArray[j] = ch.get(j);
+////                    }
+////                    isInSequence(myCharArray);
+////                }
+////                for (char g : ch) {
+////                    b.append(g);
+////                }
+////                return new Pair<>(b.toString(), true);
+////            }
+////        }
+////        return new Pair<>(b.toString(), true);
+////    }
+//    private boolean isInSequence(char[] s) {
+//        int l = s.length;
+//        Arrays.sort(s);
+//        for (int i = 1; i < l; i++) {
+//            if (s[i] - s[i - 1] != 1)
+//                return false;
+//        }
+//        return true;
+//    }
+//
+//    private void addModifiedGrp(String[] names, String service_class, String groupName) throws Exception {
+//        List<Reservation> grpReservations = new ArrayList<>();
+//        Reservation newReservation;
+//        boolean canBeAdded = false;
+//        int maxAvailableSeats = 0;
+//        if (service_class.equals("First")) {
+//            for (int i = 0; i < 2; i++) {
+//                maxAvailableSeats += model.getValue().get(i + 1).size();
+//            }
+//        } else {
+//            //economy
+//            for (int i = 9; i < 29; i++) {
+//                maxAvailableSeats += model.getKey().get(i + 1).size();
+//            }
+//        }
+//        if (names.length <= maxAvailableSeats)
+//            canBeAdded = true;
+//        else {
+//            System.out.println("Sorry! Reservation cannot be made. Not enough seats available1");
+//        }
+//
+//        if (canBeAdded && !grpMap.containsKey(groupName)) {
+//            for (String name : names) {
+//                newReservation = new Reservation(name, assignSeatForGroup(service_class), "G", service_class);
+//                reservations.add(newReservation);
+//                grpReservations.add(newReservation);
+//                reservations.forEach(x -> System.out.println(x.getAllottedSeat() + " : " + x.getName())); // remove me
+//            }
+//            if (grpMap.containsKey(groupName)) {
+//                System.out.println("Group with same name exists! Try Again");
+//            } else
+//                grpMap.put(groupName, grpReservations);
+//        }
+//    }
+//
+
 }
 
 // todo basic flow
