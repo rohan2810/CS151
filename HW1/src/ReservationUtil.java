@@ -126,7 +126,10 @@ public class ReservationUtil {
 
     /**
      * This method is responsible for generating a reservation for an individual passenger.
-     * It is called when user requests to add an passenger
+     * It is called when user requests to add an passenger.
+     * It asks for name, service_class, and preference.
+     * If the selected preference is not available, then user is prompted to re-enter their preference.
+     * If the given new preference is also not available, the user is notified that the reservation cannot be made.
      *
      * @throws Exception
      */
@@ -204,6 +207,17 @@ public class ReservationUtil {
 
     }
 
+    /**
+     * Method used when no seats are available for the given preference.
+     * It asks for another another preference.
+     * If that exists creates the reservation, else prints try again to the console.
+     *
+     * @param name          passenger name
+     * @param service_class requested service_class
+     * @param preference2   the new preference
+     * @param preferences   the old preference
+     * @throws Exception
+     */
     private void addPassengerWithArgs(String name, String service_class, String preference2, String preferences) throws Exception {
         boolean same = false;
         if (preferences.equals(preference2)) {
@@ -283,7 +297,7 @@ public class ReservationUtil {
 
     /**
      * This method is responsible for generating a reservation for an all passengers on the group.
-     * It is called when user requests to add a group reservation
+     * It is called when user requests to add a group reservation.
      *
      * @throws Exception
      */
