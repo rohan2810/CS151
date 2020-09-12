@@ -196,9 +196,90 @@ public class ReservationUtil {
             reservations.forEach(x -> System.out.println(x.getAllottedSeat() + " : " + x.getName()));
         } else {
             System.out.println("No more seats available for this particular choice. Please try again!");
+            System.out.println("Select preference [A]isle [W]indow");
+            String preference2 = sc.nextLine();
+            assert preference != null;
+            addPassengerWithArgs(name, service_class, preference2, preference);
         }
 
     }
+
+    private void addPassengerWithArgs(String name, String service_class, String preference2, String preferences) throws Exception {
+        boolean same = false;
+        if (preferences.equals(preference2)) {
+            same = true;
+        }
+        String preference = null;
+        int maxAvailableSeats = 0;
+        boolean canBeAdded = false;
+        if (service_class.equals("First")) {
+            preference = preference2;
+            for (int i = 0; i < 2; i++) {
+                if (preference.equals("W")) {
+                    for (int j = 0; j < model.getValue().get(i + 1).size(); j++) {
+                        if (model.getValue().get(i + 1).get(j).equals("A") || (model.getValue().get(i + 1).get(j).equals("D"))) {
+                            maxAvailableSeats++;
+                        }
+                    }
+                } else {
+                    for (int j = 0; j < model.getValue().get(i + 1).size(); j++) {
+                        if (model.getValue().get(i + 1).get(j).equals("B") || (model.getValue().get(i + 1).get(j).equals("C"))) {
+                            maxAvailableSeats++;
+                        }
+                    }
+                }
+            }
+            if (maxAvailableSeats > 0) {
+                canBeAdded = true;
+            }
+        } else if (service_class.equals("Economy")) {
+            preference = preference2;
+            for (int i = 9; i < 29; i++) {
+                if (preference.equals("W")) {
+                    for (int j = 0; j < model.getKey().get(i + 1).size(); j++) {
+                        if (model.getKey().get(i + 1).get(j).equals("A") || (model.getKey().get(i + 1).get(j).equals("F"))) {
+                            maxAvailableSeats++;
+                        }
+                    }
+                } else if (preference.equals("C")) {
+                    for (int j = 0; j < model.getKey().get(i + 1).size(); j++) {
+                        if (model.getKey().get(i + 1).get(j).equals("E") || (model.getKey().get(i + 1).get(j).equals("B"))) {
+                            maxAvailableSeats++;
+                        }
+                    }
+                } else {
+                    for (int j = 0; j < model.getKey().get(i + 1).size(); j++) {
+                        if (model.getKey().get(i + 1).get(j).equals("C") || (model.getKey().get(i + 1).get(j).equals("D"))) {
+                            maxAvailableSeats++;
+                        }
+                    }
+                }
+            }
+            if (maxAvailableSeats > 0) {
+                canBeAdded = true;
+            }
+        } else {
+            System.out.println("Invalid Selection!, Try again");
+        }
+        if (canBeAdded) {
+            Reservation newReservation = new Reservation(name, assignSeat(service_class, preference), "I", service_class);
+            reservations.add(newReservation);
+            System.out.println(reservations.size());
+            reservations.forEach(x -> System.out.println(x.getAllottedSeat() + " : " + x.getName()));
+        } else {
+            if (same) {
+                System.out.println("No more seats available for this particular choice. Please try again!");
+                System.out.println("Select preference [A]isle [W]indow");
+                String preference3 = sc.nextLine();
+                assert preference != null;
+                addPassengerWithArgs(name, service_class, preference3, preference);
+            } else {
+                System.out.println("No more seats available! Please start again with different choices.");
+            }
+        }
+
+    }
+
 
     /**
      * This method is responsible for generating a reservation for an all passengers on the group.
@@ -814,7 +895,7 @@ public class ReservationUtil {
 //  null pointer when manifest for group after cancel  --fixed
 //  even if no seats are left, it adds as null -- individual -- FIXED
 //  add documentation  --fixed
-//  check if null given at any stage
+//  check if null given at any stage -- fixed
 
 
 //todo corner cases
