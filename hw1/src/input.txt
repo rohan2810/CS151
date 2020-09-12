@@ -1,0 +1,39 @@
+P
+John Smith
+First
+W
+P
+Henry Barron
+First
+W
+G
+cs151
+Robt Burks, William Morton, Kevin Jackson, Denny Clark, Carole Williams, Helen Garrett, Thomas Labrie
+First
+P
+Helen Garrett
+First
+W
+G
+cssjsu
+Birdie Ross, David Johnson, Aldo Luce
+Economy
+P
+Jackie Meador
+Economy
+C
+P
+Karri Johnson
+Economy
+W
+C
+I
+John Smith
+C
+G
+cs151
+A
+Economy
+M
+First
+Q
