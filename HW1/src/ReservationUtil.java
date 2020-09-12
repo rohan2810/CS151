@@ -671,7 +671,7 @@ public class ReservationUtil {
             }
         }
         try {
-            Path file = Paths.get("Reservations.txt");
+            Path file = Paths.get("CL34.txt");
             Collections.sort(toWrite);
             Files.write(file, toWrite, StandardCharsets.UTF_8);
         } catch (IOException e) {
