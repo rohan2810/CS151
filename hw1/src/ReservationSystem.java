@@ -3,7 +3,6 @@
  *
  * @author Rohan Surana
  * @version 1.0.0
- * @copyright 09-09-2020
  */
 
 import java.util.Scanner;
@@ -14,7 +13,6 @@ import java.util.Scanner;
  *
  * @author Rohan Surana
  * @version 1.0.0
- * @copyright 09-09-2020
  */
 public class ReservationSystem {
     /**

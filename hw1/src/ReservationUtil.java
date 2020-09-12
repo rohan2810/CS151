@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
  *
  * @author Rohan Surana
  * @version 1.0.0
- * @copyright 09-06-2020
  */
 public class ReservationUtil {
 

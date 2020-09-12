@@ -9,7 +9,6 @@ import java.util.List;
  *
  * @author Rohan Surana
  * @version 1.0.0
- * @copyright 09-09-2020
  */
 public class Model {
     /**
@@ -27,7 +26,7 @@ public class Model {
      *
      * @return model --> Pair<HashMap<Integer, List<String>>, HashMap<Integer, List<String>>>
      */
-    static Pair<HashMap<Integer, List<String>>, HashMap<Integer, List<String>>> createNewStr() {
+    public static Pair<HashMap<Integer, List<String>>, HashMap<Integer, List<String>>> createNewStr() {
         List<String> econ = new LinkedList<>();
         econ.add("A");
         econ.add("B");
