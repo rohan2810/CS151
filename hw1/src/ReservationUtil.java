@@ -60,7 +60,7 @@ public class ReservationUtil {
 
         List<Reservation> grpReservations = new ArrayList<>();
         boolean alrExists = false;
-        File file = new File(arg);
+        File file = new File(arg+".txt");
         String[] data;
         if (file.exists() && !file.isDirectory()) {
             Scanner fileScanner = new Scanner(file);
