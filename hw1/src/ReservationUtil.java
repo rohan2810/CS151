@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
  *
  * @author Rohan Surana
  * @version 1.0.0
- * @copyright 09-06-2020
  */
 public class ReservationUtil {
 
@@ -67,6 +66,7 @@ public class ReservationUtil {
             alrExists = true;
             while (fileScanner.hasNext()) {
                 data = fileScanner.nextLine().split(", ");
+                System.out.println("Previous Bookings:");
                 System.out.println(Arrays.toString(data));  // remove me
                 Reservation reservation;
                 if (data.length == 4) { // group reservation
@@ -195,8 +195,7 @@ public class ReservationUtil {
         if (canBeAdded) {
             Reservation newReservation = new Reservation(name, assignSeat(service_class, preference), "I", service_class);
             reservations.add(newReservation);
-            System.out.println(reservations.size());
-            reservations.forEach(x -> System.out.println(x.getAllottedSeat() + " : " + x.getName()));
+            System.out.println(newReservation.getAllottedSeat() + ": " + newReservation.getName());
         } else {
             System.out.println("No more seats available for this particular choice. Please try again!");
             System.out.println("Select preference [A]isle [W]indow");
@@ -278,8 +277,7 @@ public class ReservationUtil {
         if (canBeAdded) {
             Reservation newReservation = new Reservation(name, assignSeat(service_class, preference), "I", service_class);
             reservations.add(newReservation);
-            System.out.println(reservations.size());
-            reservations.forEach(x -> System.out.println(x.getAllottedSeat() + " : " + x.getName()));
+            System.out.println(newReservation.getAllottedSeat() + ": " + newReservation.getName());
         } else {
             if (same) {
                 System.out.println("No more seats available for this particular choice. Please try again!");
@@ -334,7 +332,7 @@ public class ReservationUtil {
                 newReservation = new Reservation(name, assignSeatForGroup(service_class), "G", service_class);
                 reservations.add(newReservation);
                 grpReservations.add(newReservation);
-                reservations.forEach(x -> System.out.println(x.getAllottedSeat() + " : " + x.getName())); // remove me
+                System.out.println(newReservation.getAllottedSeat() + ": " + newReservation.getName());
             }
             if (grpMap.containsKey(groupName)) {
                 System.out.println("Group with same name exists! Try Again");
