@@ -8,7 +8,7 @@ import java.util.List;
  * This class creates a structure for the plane.
  *
  * @author Rohan Surana
- * @version 1.0.0
+ * @version 1.0.0 09/12/2020
  */
 public class Model {
     /**

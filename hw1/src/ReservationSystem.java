@@ -2,7 +2,7 @@
  * HOMEWORK 1
  *
  * @author Rohan Surana
- * @version 1.0.0
+ * @version 1.0.0 09/12/2020
  */
 
 import java.util.Scanner;
@@ -12,7 +12,7 @@ import java.util.Scanner;
  * It contains the main method which interacts with the user
  *
  * @author Rohan Surana
- * @version 1.0.0
+ * @version 1.0.0 09/12/2020
  */
 public class ReservationSystem {
     /**

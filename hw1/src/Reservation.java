@@ -4,7 +4,7 @@
  * This class consists of constructor, and getters and setters.
  *
  * @author Rohan Surana
- * @version 1.0.0
+ * @version 1.0.0 09/12/2020
  */
 
 

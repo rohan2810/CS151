@@ -5,7 +5,7 @@ import java.util.Comparator;
  * It implements the Comparator interface.
  *
  * @author Rohan Surana
- * @version 1.0.0
+ * @version 1.0.0 09/12/2020
  */
 public class CompareReservation implements Comparator<Reservation> {
     /**
