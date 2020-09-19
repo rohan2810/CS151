@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -8,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MyCalender {
     private final Scanner sc;
@@ -27,18 +30,20 @@ public class MyCalender {
         String startingTime = sc.nextLine();
         System.out.println("Enter the ending time of the event in 24 hour format HH:MM :");
         String endingTime = sc.nextLine();
+        createAndSaveEvent(name, date, startingTime, endingTime);
+    }
 
+    private void createAndSaveEvent(String name, String date, String startingTime, String endingTime) {
         LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         LocalTime parsedStartTime = LocalTime.parse(startingTime, DateTimeFormatter.ISO_LOCAL_TIME);
         LocalTime parsedEndTime = LocalTime.parse(endingTime, DateTimeFormatter.ISO_LOCAL_TIME);
-
         Event event = new Event(name, parsedDate, parsedStartTime, parsedEndTime);
         if ((event.getStartTime() == null || event.getEndTime() == null)) {
             System.out.println("Event not created!. Time cannot be null");
             return;
         }
         if (event.getStartTime().compareTo(event.getEndTime()) > 0) {
-            System.out.println("\nEvent not created!");
+            System.out.println("Event not created!");
             System.out.println("Start time has to be before the end time!");
             return;
         }
@@ -62,7 +67,6 @@ public class MyCalender {
         for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
             System.out.println(entry.getKey() + "  " + entry.getValue());
         }
-
     }
 
     public void quit() {
@@ -72,7 +76,7 @@ public class MyCalender {
             for (Event e : entry.getValue()) {
                 toWrite.add(e.getName());
                 toWrite.add(
-                        e.getDate() + " " + e.getStartTime() + " " + e.getEndTime()
+                        e.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) + " " + e.getStartTime() + " " + e.getEndTime()
                 );
             }
         }
@@ -151,11 +155,23 @@ public class MyCalender {
                     thatDay.forEach(x -> System.out.println(x.getStartTime() + " - " + x.getEndTime() + " " + x.getName()));
                     System.out.println("Enter the name of the event to delete");
                     String toDelete = sc.nextLine();
+                    AtomicBoolean contains = new AtomicBoolean(false);
+                    thatDay.forEach(x -> {
+                        if (x.getName().equals(toDelete)) {
+                            contains.set(true);
+                        }
+                    });
                     thatDay.removeIf(value -> value.getName().equals(toDelete));
-                    events.replace(parsedDate, thatDay);
-                    if (events.get(parsedDate).size() == 0) {
-                        events.remove(parsedDate);
+                    if (contains.get()) {
+                        events.replace(parsedDate, thatDay);
+                        if (events.get(parsedDate).size() == 0) {
+                            events.remove(parsedDate);
+                        }
+                        System.out.println("Successfully removed " + toDelete);
+                    } else {
+                        System.out.println("No event found under name " + toDelete + ". Please Try Again!");
                     }
+
                 } else {
                     System.out.println("No events found on the particular date! Try again");
                 }
@@ -186,7 +202,18 @@ public class MyCalender {
 
     }
 
-    public void loadEvents() {
+    public void loadEvents(String args) throws FileNotFoundException {
+        File file = new File(args + ".txt");
+        if (file.exists() && !file.isDirectory()) {
+            Scanner fileScanner = new Scanner(file);
+            while (fileScanner.hasNext()) {
+                String name = fileScanner.nextLine();
+                String[] details = fileScanner.nextLine().split("\\s+");
+                createAndSaveEvent(name, details[0], details[1], details[2]);
+            }
+        } else {
+            System.out.println("This is the first run! Any previous records not found.");
+        }
 
     }
 
