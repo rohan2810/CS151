@@ -1,3 +1,5 @@
+import javafx.util.Pair;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,10 +19,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MyCalender {
     private final Scanner sc;
     private HashMap<LocalDate, ArrayList<Event>> events;
+    private HashMap<String, HashMap<LocalDate, ArrayList<Event>>> reoccurringEvents;
 
     public MyCalender(Scanner sc) {
         this.sc = sc;
         this.events = new HashMap<>();
+        this.reoccurringEvents = new HashMap<>();
     }
 
     public void createEvent() {
@@ -32,25 +36,31 @@ public class MyCalender {
         String startingTime = sc.nextLine();
         System.out.println("Enter the ending time of the event in 24 hour format HH:MM :");
         String endingTime = sc.nextLine();
-//        createAndSaveEvent(name, date, startingTime, endingTime);
         LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         LocalTime parsedStartTime = LocalTime.parse(startingTime, DateTimeFormatter.ISO_LOCAL_TIME);
         LocalTime parsedEndTime = LocalTime.parse(endingTime, DateTimeFormatter.ISO_LOCAL_TIME);
+        if (saveEvents(name, parsedDate, parsedStartTime, parsedEndTime)) return;
+        for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
+            System.out.println(entry.getKey() + "  " + entry.getValue());
+        }
+    }
+
+    private boolean saveEvents(String name, LocalDate parsedDate, LocalTime parsedStartTime, LocalTime parsedEndTime) {
         Event event = new Event(name, parsedDate, parsedStartTime, parsedEndTime);
         if ((event.getStartTime() == null || event.getEndTime() == null)) {
             System.out.println("Event not created!. Time cannot be null");
-            return;
+            return true;
         }
         if (event.getStartTime().compareTo(event.getEndTime()) > 0) {
             System.out.println("Event not created!");
             System.out.println("Start time has to be before the end time!");
-            return;
+            return true;
         }
         for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
             for (Event e : entry.getValue()) {
                 if (TimeInterval.isConflicting(e, event)) {
                     System.out.println("Event cannot be created. It conflicts with " + e.getName());
-                    return;
+                    return true;
                 }
             }
         }
@@ -63,58 +73,71 @@ public class MyCalender {
         }
         list.add(event);
         events.put(parsedDate, list);
-        for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
-            System.out.println(entry.getKey() + "  " + entry.getValue());
-        }
+        return false;
     }
 
-    private void loadAndSaveEvents(String name, String date, String startingTime, String endingTime, boolean dateRequiresParsing, LocalDate startDate) {
-        LocalDate date1;
-        if (dateRequiresParsing) {
-            String[] actualDate = date.split("/");
-            int year = Integer.parseInt(actualDate[2]) + 2000;
-            int dayOfMonth = Integer.parseInt(actualDate[1]);
-            int month = Integer.parseInt(actualDate[0]);
-            date1 = LocalDate.of(year, month, dayOfMonth);
-        } else {
-            date1 = startDate;
-        }
-        String[] timeStart = startingTime.split(":");
-        String[] timeEnd = endingTime.split(":");
-        LocalTime start = LocalTime.of(Integer.parseInt(timeStart[0]), Integer.parseInt(timeStart[1]));
-        LocalTime last = LocalTime.of(Integer.parseInt(timeEnd[0]), Integer.parseInt(timeEnd[1]));
-        Event event = new Event(name, date1, start, last);
-        if ((event.getStartTime() == null || event.getEndTime() == null)) {
-            System.out.println("Event not created!. Time cannot be null");
-            return;
-        }
-        if (event.getStartTime().compareTo(event.getEndTime()) > 0) {
-            System.out.println("Event not created!");
-            System.out.println("Start time has to be before the end time!");
-            return;
-        }
-        for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
-            for (Event e : entry.getValue()) {
-                if (TimeInterval.isConflicting(e, event)) {
-                    System.out.println("Event cannot be created. It conflicts with " + e.getName());
-                    return;
-                }
-            }
-        }
+    private void loadAndSaveEvents(String name, String date, String startingTime, String endingTime) {
 
-        ArrayList<Event> list;
-        if (events.containsKey(date1)) {
-            list = events.get(date1);
-        } else {
-            list = new ArrayList<>();
-        }
-        list.add(event);
-        events.put(date1, list);
+        String[] actualDate = date.split("/");
+        int year = Integer.parseInt(actualDate[2]) + 2000;
+        int dayOfMonth = Integer.parseInt(actualDate[1]);
+        int month = Integer.parseInt(actualDate[0]);
+        LocalDate date1 = LocalDate.of(year, month, dayOfMonth);
+        Pair<LocalTime, LocalTime> times = timeFormatter(startingTime, endingTime);
+        if (saveEvents(name, date1, times.getKey(), times.getValue())) return;
         for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
             System.out.println(entry.getKey() + "  ");
             entry.getValue().forEach(x -> System.out.println(x.getName()));
         }
     }
+
+    private Pair<LocalTime, LocalTime> timeFormatter(String startingTime, String endingTime) {
+        String[] timeStart = startingTime.split(":");
+        String[] timeEnd = endingTime.split(":");
+        LocalTime start = LocalTime.of(Integer.parseInt(timeStart[0]), Integer.parseInt(timeStart[1]));
+        LocalTime last = LocalTime.of(Integer.parseInt(timeEnd[0]), Integer.parseInt(timeEnd[1]));
+        return new Pair<>(start, last);
+    }
+
+    private void loadAndSaveEventsReoccurring(String name, String reoccursOn, LocalDate date, String startingTime, String endingTime, LocalDate startDate, LocalDate endDate) {
+        Pair<LocalTime, LocalTime> times = timeFormatter(startingTime, endingTime);
+        Event event = new Event(name, reoccursOn, date, times.getKey(), times.getValue(), startDate, endDate);
+        if (event.getStartTime().compareTo(event.getEndTime()) > 0) {
+            System.out.println("Event not created!");
+            System.out.println("Start time has to be before the end time!");
+            return;
+        }
+        // todo fix this
+//        for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
+//            for (Event e : entry.getValue()) {
+//                if (TimeInterval.isConflicting(e, event)) {
+//                    System.out.println("Event cannot be created. It conflicts with " + e.getName());
+//                    return;
+//                }
+//            }
+//        }
+
+        HashMap<LocalDate, ArrayList<Event>> map;
+        if (reoccurringEvents.containsKey(name)) {
+            map = reoccurringEvents.get(name);
+        } else {
+            map = new HashMap<>();
+        }
+        ArrayList<Event> list;
+        if (map.containsKey(date)) {
+            list = map.get(date);
+        } else {
+            list = new ArrayList<>();
+        }
+        list.add(event);
+        map.put(date, list);
+        reoccurringEvents.put(name, map);
+        for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
+            System.out.println(entry.getKey() + "  ");
+            entry.getValue().forEach(x -> System.out.println(x.getName()));
+        }
+    }
+
 
     public void quit() {
         System.out.println("Good Bye!");
@@ -179,8 +202,22 @@ public class MyCalender {
         }
 
 
-        //todo
-        //System.out.println("RECURRING EVENTS");
+        System.out.println("RECURRING EVENTS");
+        List<String> names = new ArrayList<>(reoccurringEvents.keySet());
+        Collections.sort(names);
+        for (String name : names) {
+            HashMap<LocalDate, ArrayList<Event>> l = reoccurringEvents.get(name);
+            List<LocalDate> dates1 = new ArrayList<>(l.keySet());
+            ArrayList<Event> l1 = l.get(dates1.get(0));
+            Event event = l1.get(0);
+            System.out.println(event.getName());
+            System.out.println(
+                    event.getReoccursOn() + " "
+                            + event.getStartTime() + " "
+                            + event.getEndTime() + " "
+                            + event.getStartDate().format(DateTimeFormatter.ofPattern("MM/dd/yy")) + " "
+                            + event.getEndDate().format(DateTimeFormatter.ofPattern("MM/dd/yy")));
+        }
     }
 
     public void viewBy() {
@@ -257,31 +294,39 @@ public class MyCalender {
                 String name = fileScanner.nextLine();
                 String[] details = fileScanner.nextLine().split("\\s+");
                 if (details.length == 3) {
-                    loadAndSaveEvents(name, details[0], details[1], details[2], true, null);
+                    loadAndSaveEvents(name, details[0], details[1], details[2]);
                 } else {
                     String[] actualDate = details[3].split("/");
                     int year = Integer.parseInt(actualDate[2]) + 2000;
                     int dayOfMonth = Integer.parseInt(actualDate[1]);
                     int month = Integer.parseInt(actualDate[0]);
-                    LocalDate date1 = LocalDate.of(year, month, dayOfMonth);
+                    LocalDate startDate = LocalDate.of(year, month, dayOfMonth);
+                    LocalDate date = startDate;
                     String[] actualDate1 = details[4].split("/");
                     int year1 = Integer.parseInt(actualDate1[2]) + 2000;
                     int dayOfMonth1 = Integer.parseInt(actualDate1[1]);
                     int month1 = Integer.parseInt(actualDate1[0]);
-                    LocalDate date2 = LocalDate.of(year1, month1, dayOfMonth1);
-                    long weeks = ChronoUnit.WEEKS.between(date1, date2);
-                    String days = details[0];
-                    LocalDate startDate = date1;
-                    DayOfWeek dayOfWeek = startDate.getDayOfWeek();
+                    LocalDate endDate = LocalDate.of(year1, month1, dayOfMonth1);
+                    long weeks = ChronoUnit.WEEKS.between(date, endDate);
+                    System.out.println(weeks);
+                    String days = details[0];  // event days For eg . TF
                     for (int i = 0; i < days.length(); i++) {
-                        String dayOfWeek2 = getDayOfWeek(days.substring(i, i + 1));
+                        int w = (int) weeks;
+                        date = LocalDate.of(year, month, dayOfMonth);
+                        DayOfWeek dayOfWeek = date.getDayOfWeek();  // gets the day on the given starting day
+                        String dayOfWeek2 = getDayOfWeek(days.substring(i, i + 1));  // gets the first two letters of that day
+                        boolean sub = false;
                         while (!dayOfWeek2.equals(dayOfWeek.toString().substring(0, 2))) {
-                            startDate = startDate.plusDays(1);
-                            dayOfWeek = dayOfWeek.minus(1);
+                            date = date.plusDays(1);
+                            dayOfWeek = dayOfWeek.plus(1);
+                            sub = true;
                         }
-                        for (int j = 0; j < weeks; j++) {
-                            loadAndSaveEvents(name, null, details[1], details[2], false, startDate);
-                            startDate = startDate.plusDays(7);
+                        if (!sub) {
+                            w = (int) (weeks + 1);
+                        }
+                        for (int j = 0; j < w; j++) {
+                            loadAndSaveEventsReoccurring(name, details[0], date, details[1], details[2], startDate, endDate);
+                            date = date.plusDays(7);
                         }
                     }
                 }
