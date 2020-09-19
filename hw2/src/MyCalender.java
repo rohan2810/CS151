@@ -1,3 +1,8 @@
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -44,7 +49,6 @@ public class MyCalender {
                     return;
                 }
             }
-
         }
 
         ArrayList<Event> list;
@@ -62,6 +66,22 @@ public class MyCalender {
     }
 
     public void quit() {
+        System.out.println("Good Bye!");
+        List<String> toWrite = new ArrayList<>();
+        for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
+            for (Event e : entry.getValue()) {
+                toWrite.add(e.getName());
+                toWrite.add(
+                        e.getDate() + " " + e.getStartTime() + " " + e.getEndTime()
+                );
+            }
+        }
+        try {
+            Path file = Paths.get("output.txt");
+            Files.write(file, toWrite, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -80,7 +100,36 @@ public class MyCalender {
     }
 
     public void eventList() {
+        System.out.println("ONE TIME EVENTS");
+        List<LocalDate> dates = new ArrayList<>(events.keySet());
+        Collections.sort(dates);
+        int yearVal = 0;
+        for (LocalDate date : dates) {
+            ArrayList<Event> l = events.get(date);
+            l.sort(Comparator.comparing(Event::getStartTime));
+            for (Event event : l) {
+                if (yearVal != event.getDate().getYear()) {
+                    System.out.println(event.getDate().getYear());
+                    yearVal = event.getDate().getYear();
+                }
+                System.out.println(
+                        " "
+                                + (event.getDate().getDayOfWeek().toString().substring(0, 1) + event.getDate().getDayOfWeek().toString().substring(1).toLowerCase())
+                                + " "
+                                + (event.getDate().getMonth().toString().substring(0, 1) + event.getDate().getMonth().toString().substring(1).toLowerCase())
+                                + " "
+                                + event.getDate().getDayOfMonth()
+                                + " "
+                                + event.getStartTime() + " - "
+                                + event.getEndTime() + " "
+                                + event.getName()
+                );
+            }
+        }
 
+
+        //todo
+        //System.out.println("RECURRING EVENTS");
     }
 
     public void viewBy() {
@@ -121,6 +170,7 @@ public class MyCalender {
                 } else {
                     ArrayList<Event> thatDay = events.get(parsedDate);
                     System.out.println("All events for the day");
+                    thatDay.sort(Comparator.comparing(Event::getStartTime));
                     thatDay.forEach(x -> System.out.println(x.getStartTime() + " - " + x.getEndTime() + " " + x.getName()));
                     int size = events.get(parsedDate).size();
                     events.remove(parsedDate);
