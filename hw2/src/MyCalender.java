@@ -6,9 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -30,10 +32,7 @@ public class MyCalender {
         String startingTime = sc.nextLine();
         System.out.println("Enter the ending time of the event in 24 hour format HH:MM :");
         String endingTime = sc.nextLine();
-        createAndSaveEvent(name, date, startingTime, endingTime);
-    }
-
-    private void createAndSaveEvent(String name, String date, String startingTime, String endingTime) {
+//        createAndSaveEvent(name, date, startingTime, endingTime);
         LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         LocalTime parsedStartTime = LocalTime.parse(startingTime, DateTimeFormatter.ISO_LOCAL_TIME);
         LocalTime parsedEndTime = LocalTime.parse(endingTime, DateTimeFormatter.ISO_LOCAL_TIME);
@@ -66,6 +65,54 @@ public class MyCalender {
         events.put(parsedDate, list);
         for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
             System.out.println(entry.getKey() + "  " + entry.getValue());
+        }
+    }
+
+    private void loadAndSaveEvents(String name, String date, String startingTime, String endingTime, boolean dateRequiresParsing, LocalDate startDate) {
+        LocalDate date1;
+        if (dateRequiresParsing) {
+            String[] actualDate = date.split("/");
+            int year = Integer.parseInt(actualDate[2]) + 2000;
+            int dayOfMonth = Integer.parseInt(actualDate[1]);
+            int month = Integer.parseInt(actualDate[0]);
+            date1 = LocalDate.of(year, month, dayOfMonth);
+        } else {
+            date1 = startDate;
+        }
+        String[] timeStart = startingTime.split(":");
+        String[] timeEnd = endingTime.split(":");
+        LocalTime start = LocalTime.of(Integer.parseInt(timeStart[0]), Integer.parseInt(timeStart[1]));
+        LocalTime last = LocalTime.of(Integer.parseInt(timeEnd[0]), Integer.parseInt(timeEnd[1]));
+        Event event = new Event(name, date1, start, last);
+        if ((event.getStartTime() == null || event.getEndTime() == null)) {
+            System.out.println("Event not created!. Time cannot be null");
+            return;
+        }
+        if (event.getStartTime().compareTo(event.getEndTime()) > 0) {
+            System.out.println("Event not created!");
+            System.out.println("Start time has to be before the end time!");
+            return;
+        }
+        for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
+            for (Event e : entry.getValue()) {
+                if (TimeInterval.isConflicting(e, event)) {
+                    System.out.println("Event cannot be created. It conflicts with " + e.getName());
+                    return;
+                }
+            }
+        }
+
+        ArrayList<Event> list;
+        if (events.containsKey(date1)) {
+            list = events.get(date1);
+        } else {
+            list = new ArrayList<>();
+        }
+        list.add(event);
+        events.put(date1, list);
+        for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
+            System.out.println(entry.getKey() + "  ");
+            entry.getValue().forEach(x -> System.out.println(x.getName()));
         }
     }
 
@@ -209,11 +256,78 @@ public class MyCalender {
             while (fileScanner.hasNext()) {
                 String name = fileScanner.nextLine();
                 String[] details = fileScanner.nextLine().split("\\s+");
-                createAndSaveEvent(name, details[0], details[1], details[2]);
+                if (details.length == 3) {
+                    loadAndSaveEvents(name, details[0], details[1], details[2], true, null);
+                } else {
+                    String[] actualDate = details[3].split("/");
+                    int year = Integer.parseInt(actualDate[2]) + 2000;
+                    int dayOfMonth = Integer.parseInt(actualDate[1]);
+                    int month = Integer.parseInt(actualDate[0]);
+                    LocalDate date1 = LocalDate.of(year, month, dayOfMonth);
+                    String[] actualDate1 = details[4].split("/");
+                    int year1 = Integer.parseInt(actualDate1[2]) + 2000;
+                    int dayOfMonth1 = Integer.parseInt(actualDate1[1]);
+                    int month1 = Integer.parseInt(actualDate1[0]);
+                    LocalDate date2 = LocalDate.of(year1, month1, dayOfMonth1);
+                    long weeks = ChronoUnit.WEEKS.between(date1, date2);
+                    String days = details[0];
+                    LocalDate startDate = date1;
+                    DayOfWeek dayOfWeek = startDate.getDayOfWeek();
+                    for (int i = 0; i < days.length(); i++) {
+                        String dayOfWeek2 = getDayOfWeek(days.substring(i, i + 1));
+                        while (!dayOfWeek2.equals(dayOfWeek.toString().substring(0, 2))) {
+                            startDate = startDate.plusDays(1);
+                            dayOfWeek = dayOfWeek.minus(1);
+                        }
+                        for (int j = 0; j < weeks; j++) {
+                            loadAndSaveEvents(name, null, details[1], details[2], false, startDate);
+                            startDate = startDate.plusDays(7);
+                        }
+                    }
+                }
             }
         } else {
             System.out.println("This is the first run! Any previous records not found.");
         }
+        System.out.println("Successfully Loaded");
+
+    }
+
+    private String getDayOfWeek(String detail) {
+        String toReturn;
+        switch (detail.toUpperCase()) {
+            case "S": {
+                toReturn = "SU";
+                break;
+            }
+            case "M": {
+                toReturn = "MO";
+                break;
+            }
+            case "T": {
+                toReturn = "TU";
+                break;
+            }
+            case "W": {
+                toReturn = "WE";
+                break;
+            }
+            case "R": {
+                toReturn = "TH";
+                break;
+            }
+            case "F": {
+                toReturn = "FR";
+                break;
+            }
+            case "A": {
+                toReturn = "SA";
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected value: " + detail.toLowerCase());
+        }
+        return toReturn;
 
     }
 

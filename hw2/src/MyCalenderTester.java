@@ -5,9 +5,9 @@ public class MyCalenderTester {
     public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
         MyCalender calender = new MyCalender(sc);
-        calender.printCalender();  //fix this
         //print calender here
         calender.loadEvents(args[0]);
+        calender.printCalender();  //fix this
 
         System.out.println("Select one of the following options:\n"
                 + "[V]iew by  [C]reate, [G]o to [E]vent list [D]elete  [Q]uit");
