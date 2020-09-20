@@ -7,10 +7,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -27,32 +27,8 @@ public class MyCalender {
         this.reoccurringEvents = new HashMap<>();
     }
 
-    public void printCalender() {
-        Calendar calendar = new GregorianCalendar();
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-        System.out.println(new SimpleDateFormat("MMMM yyyy").format(calendar.getTime()));
-        System.out.println(" S  M  T  W  T  F  S");
-
-        StringBuilder initialSpace = new StringBuilder();
-        for (int i = 0; i < dayOfWeek - 1; i++) {
-            initialSpace.append("   ");
-        }
-        System.out.print(initialSpace);
-
-        for (int i = 0, dayOfMonth = 1; dayOfMonth <= daysInMonth; i++) {
-            for (int j = ((i == 0) ? dayOfWeek - 1 : 0); j < 7 && (dayOfMonth <= daysInMonth); j++) {
-                System.out.printf("%2d ", dayOfMonth);
-                dayOfMonth++;
-            }
-            System.out.println();
-        }
-    }
-
     public void loadEvents(String args) throws FileNotFoundException {
-        File file = new File(args + ".txt");
+        File file = new File(args);
         if (file.exists() && !file.isDirectory()) {
             Scanner fileScanner = new Scanner(file);
             while (fileScanner.hasNext()) {
@@ -266,7 +242,138 @@ public class MyCalender {
     }
 
     public void viewBy() {
+        LocalDate today = LocalDate.now();
+        System.out.println("[D]ay view or [M]view ? ");
+        String view = sc.nextLine().toLowerCase();
+        outerLoop:
+        switch (view) {
+            case "m": {
+                printMonth(today, false);
+                System.out.println("\n[P]revious or [N]ext or [G]o back to the main menu ? ");
 
+                while (sc.hasNext()) {
+                    String selection = sc.nextLine();
+
+                    switch (selection.toLowerCase()) {
+                        case "p":
+                            today = today.minusMonths(1);
+                            printMonth(today, false);
+                            break;
+                        case "n":
+                            today = today.plusMonths(1);
+
+                            printMonth(today, false);
+                            break;
+                        case "g":
+                            break outerLoop;
+                        default:
+                            System.out.println();
+                            System.out.println("Enter a valid selection!");
+                    }
+
+                    System.out.println("\n[P]revious or [N]ext or [G]o back to the main menu ? ");
+                }
+            }
+            case "d": {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, MMM d yyyy");
+                System.out.println(" " + formatter.format(today));
+                DateTimeFormatter pattern = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                LocalDate parsedDate = LocalDate.parse(today.format(pattern), pattern);
+                showEventsOnDay(parsedDate);
+                System.out.println("[P]revious or [N]ext or [G]o back to the main menu ? ");
+                while (sc.hasNext()) {
+                    String selection = sc.nextLine();
+                    switch (selection.toLowerCase()) {
+                        case "p": {
+                            today = today.minusDays(1);
+                            parsedDate = parsedDate.minusDays(1);
+                            System.out.println(" " + formatter.format(today));
+                            showEventsOnDay(parsedDate);
+                            break;
+                        }
+                        case "n": {
+                            today = today.plusDays(1);
+                            parsedDate = parsedDate.plusDays(1);
+                            System.out.println(" " + formatter.format(today));
+                            showEventsOnDay(parsedDate);
+                            break;
+                        }
+                        case "g": {
+                            break outerLoop;
+                        }
+                    }
+                    System.out.println("[P]revious or [N]ext or [G]o back to the main menu ? ");
+                }
+                break;
+            }
+            default:
+                System.out.println("Invalid Input! Please try again");
+        }
+    }
+
+    private void showEventsOnDay(LocalDate today) {
+        ArrayList<Event> allEvents = new ArrayList<>();
+        if (events.containsKey(today)) {
+            allEvents.addAll(events.get(today));
+        }
+        for (Map.Entry<String, HashMap<LocalDate, ArrayList<Event>>> entry : reoccurringEvents.entrySet()) {
+            if (entry.getValue().containsKey(today)) {
+                allEvents.addAll(entry.getValue().get(today));
+            }
+        }
+        allEvents.sort(Comparator.comparing(Event::getStartTime));
+        for (Event e : allEvents) {
+            System.out.println(e.getName() + " : " + e.getStartTime() + " - " + e.getEndTime());
+        }
+    }
+
+    public void printMonth(LocalDate date, boolean square) {
+        System.out.println(" " + date.getMonth() + " " + date.getYear());
+        GregorianCalendar calendar = GregorianCalendar.from(date.atStartOfDay(ZoneId.systemDefault()));
+        GregorianCalendar tempCal = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
+        int total_week_days = 7;
+        int dayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK) - 1;
+
+        System.out.println(" Su Mo Tu We Th Fr Sa");
+
+        for (int i = 0; i < dayOfWeek; i++) {
+            System.out.printf("%3s", " ");
+            total_week_days--;
+        }
+
+        for (int i = 0; i < calendar.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
+            if (total_week_days <= 0) {
+                total_week_days = 7;
+                System.out.println();
+            }
+            LocalDate day = tempCal.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            boolean oneTime = events.containsKey(day);
+            boolean reoccur = false;
+            for (Map.Entry<String, HashMap<LocalDate, ArrayList<Event>>> entry : reoccurringEvents.entrySet()) {
+                if (entry.getValue().containsKey(day)) {
+                    reoccur = true;
+                    break;
+                }
+            }
+            boolean todayEvent = oneTime || reoccur;
+            boolean todayDate = tempCal.get(Calendar.DAY_OF_MONTH) == calendar.get(Calendar.DAY_OF_MONTH) &&
+                    tempCal.get(Calendar.MONTH) == calendar.get(Calendar.MONTH) &&
+                    tempCal.get(Calendar.YEAR) == calendar.get(Calendar.YEAR);
+            if (square) {
+                if (todayDate)
+                    System.out.printf("[%2d]", tempCal.get(Calendar.DAY_OF_MONTH));
+                else
+                    System.out.printf("%3d", tempCal.get(Calendar.DAY_OF_MONTH));
+
+            } else {
+                if (todayEvent)
+                    System.out.printf("{%2d}", tempCal.get(Calendar.DAY_OF_MONTH));
+                else
+                    System.out.printf("%3d", tempCal.get(Calendar.DAY_OF_MONTH));
+            }
+            tempCal.add(Calendar.DAY_OF_MONTH, 1);
+            total_week_days--;
+        }
     }
 
     public void delete() {
@@ -339,12 +446,19 @@ public class MyCalender {
     public void quit() {
         System.out.println("Good Bye!");
         List<String> toWrite = new ArrayList<>();
-        for (Map.Entry<LocalDate, ArrayList<Event>> entry : events.entrySet()) {
-            for (Event e : entry.getValue()) {
+        List<Event> toWrite1 = new ArrayList<>();
+
+        events.forEach((key2, value2) -> toWrite1.addAll(value2));
+        reoccurringEvents.forEach((key, value) -> value.entrySet().stream().findFirst().ifPresent(y -> toWrite1.addAll(y.getValue())));
+
+        toWrite1.sort(Comparator.comparing(Event::getStartTime));
+        for (Event e : toWrite1) {
+            if (e.getReoccursOn() != null) {
                 toWrite.add(e.getName());
-                toWrite.add(
-                        e.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) + " " + e.getStartTime() + " " + e.getEndTime()
-                );
+                toWrite.add(e.getReoccursOn() + " " + e.getStartTime() + " " + e.getEndTime() + " " + e.getStartDate().format(DateTimeFormatter.ofPattern("MM/dd/yy")) + " " + e.getEndDate().format(DateTimeFormatter.ofPattern("MM/dd/yy")) + " ");
+            } else {
+                toWrite.add(e.getName());
+                toWrite.add(e.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")) + " " + e.getStartTime() + " " + e.getEndTime());
             }
         }
         try {
@@ -401,11 +515,5 @@ public class MyCalender {
         return toReturn;
 
     }
-
-    //todo
-    // change print calender
-    // implement view by
-    // introduce the concept of Recurring events everywhere
-    // fix time conflict reoccur/one-time
 
 }
