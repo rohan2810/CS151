@@ -16,12 +16,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class MyCalender {
+public class MyCalendar {
     private final Scanner sc;
     private HashMap<LocalDate, ArrayList<Event>> events;
     private HashMap<String, HashMap<LocalDate, ArrayList<Event>>> reoccurringEvents;
 
-    public MyCalender(Scanner sc) {
+    public MyCalendar(Scanner sc) {
         this.sc = sc;
         this.events = new HashMap<>();
         this.reoccurringEvents = new HashMap<>();
@@ -516,4 +516,8 @@ public class MyCalender {
 
     }
 
+    //todo
+    // conflicting -- if time
+    // sorting reoccurring events
+    // implement recurring in go-to
 }

@@ -2,10 +2,10 @@ import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.Scanner;
 
-public class MyCalenderTester {
+public class MyCalendarTester {
     public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
-        MyCalender calender = new MyCalender(sc);
+        MyCalendar calender = new MyCalendar(sc);
         calender.loadEvents(args[0]);
         LocalDate today = LocalDate.now();
         calender.printMonth(today, true);
