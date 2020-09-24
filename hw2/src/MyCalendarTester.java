@@ -1,8 +1,30 @@
+/**
+ * HOMEWORK 2
+ *
+ * @author Rohan Surana
+ * @version 1.0.0 09/22/2020
+ */
+
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+/**
+ * MyCalenderTester class is responsible for testing the solution.
+ * It contains the main method which interacts with the user
+ *
+ * @author Rohan Surana
+ * @version 1.0.0 09/12/2020
+ */
 public class MyCalendarTester {
+    /**
+     * This main method is responsible for interacting with the user.
+     * It creates an single instance of MyCalender per run which is used for providing the functionality to the user.
+     *
+     * @param args takes the file name as input.
+     *             If the file is present, the events are loaded.
+     *             If the file is not there, it creates one and updated it at the end of the program.
+     */
     public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
         MyCalendar calender = new MyCalendar(sc);

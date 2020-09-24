@@ -1,12 +1,21 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * Event class represents an event.
+ * It contains of identifiers like 'name', 'date', 'startTime', 'endTime' etc which can be used to lookup an event.
+ * This class consists of constructor, and getters and setters.
+ *
+ * @author Rohan Surana
+ * @version 1.0.0 09/22/2020
+ */
+
 public class Event {
     private String name;
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
-    private String reoccursOn;
+    private String recursOn;
     private LocalDate startDate;
     private LocalDate endDate;
 
@@ -17,9 +26,9 @@ public class Event {
         this.endTime = endTime;
     }
 
-    public Event(String name, String reoccursOn, LocalDate date, LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate endDate) {
+    public Event(String name, String recursOn, LocalDate date, LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate endDate) {
         this.name = name;
-        this.reoccursOn = reoccursOn;
+        this.recursOn = recursOn;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -51,12 +60,12 @@ public class Event {
         this.startTime = startTime;
     }
 
-    public String getReoccursOn() {
-        return reoccursOn;
+    public String getRecursOn() {
+        return recursOn;
     }
 
-    public void setReoccursOn(String reoccursOn) {
-        this.reoccursOn = reoccursOn;
+    public void setRecursOn(String recursOn) {
+        this.recursOn = recursOn;
     }
 
     public LocalDate getStartDate() {
