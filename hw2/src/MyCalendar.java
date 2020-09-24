@@ -185,14 +185,30 @@ public class MyCalendar {
         System.out.println("Enter the date [MM/DD/YYYY]");
         String date = sc.nextLine();
         LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        ArrayList<Event> thatDay = new ArrayList<>();
+        boolean contains = false;
+
         if (events.containsKey(parsedDate) || !events.isEmpty()) {
-            ArrayList<Event> thatDay = events.get(parsedDate);
+            thatDay = events.get(parsedDate);
+            contains = true;
+        }
+
+        for (Map.Entry<String, HashMap<LocalDate, ArrayList<Event>>> entry : reoccurringEvents.entrySet()) {
+            if (entry.getValue().containsKey(parsedDate)) {
+                thatDay.add(entry.getValue().get(parsedDate).get(0));
+                contains = true;
+            }
+        }
+
+
+        if (contains) {
             System.out.println("All events on: " + date);
             thatDay.sort(Comparator.comparing(Event::getStartTime));
             thatDay.forEach(x -> System.out.println(x.getStartTime() + " - " + x.getEndTime() + " " + x.getName()));
         } else {
             System.out.println("No events found on the particular date! Try again");
         }
+
     }
 
     public void eventList() {
