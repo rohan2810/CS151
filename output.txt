@@ -1,12 +1,16 @@
-Interview at BigCorp
-09/28/2020 18:30 19:39
-Dentist appt
-10/03/2020 16:15 17:00
+Interview at Google
+11/13/2020 08:00 10:00
+Birthday
+10/28/2020 09:00 10:00
+New Year Eve
+01/01/2021 00:01 23:59
+Cricket Games
+S 08:00 12:00 01/03/20 12/15/20 
 CS151 Lecture
 TR 10:30 11:45 01/23/20 05/07/20 
 Course Committee Meeting
-F 18:30 20:30 01/27/20 05/13/20 
+F 15:30 17:30 01/27/20 05/13/20 
 CS157C Lecture
-MW 11:45 13:15 09/28/20 09/30/20 
-Machine Learning
-MW 11:45 11:50 09/28/20 10/06/20 
+MW 11:45 13:15 01/27/20 05/06/20 
+Machine Learning Lecture
+MF 18:00 21:00 01/27/20 05/06/20 

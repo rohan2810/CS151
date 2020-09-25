@@ -50,6 +50,9 @@ public class MyCalendar {
      * @throws FileNotFoundException
      */
     public void loadEvents(String args) throws FileNotFoundException {
+        print("########################################");
+        print("##      Loading One-Time events      ##");
+        print("########################################");
         File file = new File(args);
         if (file.exists() && !file.isDirectory()) {
             Scanner fileScanner = new Scanner(file);
@@ -97,7 +100,9 @@ public class MyCalendar {
         } else {
             print("This is the first run! Any previous records not found.");
         }
-        print("Loading Recurring events ");
+        print("########################################");
+        print("##      Loading Recurring events      ##");
+        print("########################################");
         recurringEvents.forEach((key, value) -> print("Loaded " + key));
         print("Loading is done!");
 
@@ -124,7 +129,9 @@ public class MyCalendar {
         LocalTime parsedEndTime = LocalTime.parse(endingTime, DateTimeFormatter.ISO_LOCAL_TIME);
         Pair<Event, Boolean> isSaved = saveEvents(name, parsedDate, parsedStartTime, parsedEndTime);
         if (isSaved.getValue()) {
-            print("Event Created!");
+            print("########################################");
+            print("##          EVENT CREATED !!          ##");
+            print("########################################");
             print(isSaved.getKey().getName() + " "
                     + isSaved.getKey().getDate() + " "
                     + isSaved.getKey().getStartTime() + " "
@@ -162,7 +169,10 @@ public class MyCalendar {
             }
         }
         if (conflicts.getValue()) {
-            System.out.println("Event cannot be created. It conflicts with " + conflicts.getKey().getName());
+            print("########################################");
+            print("##             ERROR !!               ##");
+            print("########################################");
+            System.out.println("\" " + event.getName() + " \"" + " cannot be created. It conflicts with " + "\" " + conflicts.getKey().getName() + " \"");
             return new Pair<>(null, false);
         }
 
@@ -223,7 +233,10 @@ public class MyCalendar {
             }
         }
         if (conflicts.getValue()) {
-            System.out.println("Event cannot be created. It conflicts with " + conflicts.getKey().getName());
+            print("########################################");
+            print("##             ERROR !!               ##");
+            print("########################################");
+            print("\" " + event.getName() + " \"" + " cannot be created. It conflicts with " + "\" " + conflicts.getKey().getName() + " \"");
         } else {
             HashMap<LocalDate, ArrayList<Event>> map;
             if (recurringEvents.containsKey(name)) {
@@ -255,8 +268,8 @@ public class MyCalendar {
         ArrayList<Event> thatDay = new ArrayList<>();
         boolean contains = false;
 
-        if (events.containsKey(parsedDate) || !events.isEmpty()) {
-            thatDay = events.get(parsedDate);
+        if (events.containsKey(parsedDate)) {
+            thatDay.addAll(events.get(parsedDate));
             contains = true;
         }
 
@@ -512,6 +525,9 @@ public class MyCalendar {
                         if (events.get(parsedDate).size() == 0) {
                             events.remove(parsedDate);
                         }
+                        print("##################################################");
+                        print("##" + "Successfully removed " + toDelete + " #####");
+                        print("##################################################");
                         print("Successfully removed " + toDelete);
                     } else {
                         print("No event found under name " + toDelete + ". Please Try Again!");
