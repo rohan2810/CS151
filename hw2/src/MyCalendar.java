@@ -455,7 +455,7 @@ public class MyCalendar {
         print(" Su Mo Tu We Th Fr Sa");
 
         for (int i = 0; i < dayOfWeek; i++) {
-            System.out.printf("%3s", " ");
+            System.out.printf("%3s", " ");//change
             total_week_days--;
         }
 
