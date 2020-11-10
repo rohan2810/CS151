@@ -27,7 +27,7 @@ public class CarShape implements MoveableShape {
     }
 
     public void move() {
-        x+=10;
+        x += 10;
     }
 
     public void draw(Graphics2D g2) {

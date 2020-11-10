@@ -29,8 +29,9 @@ public class ReservationUtil {
      * Scanner
      * ArrayList of Reservation  --> stores all the reservations
      * Map <String, List<Reservation>>  -->
-     *      Key   (String) : Group Name
-     *      Value (List<Reservation>) : Reservations linked to the group name(key)
+     * Key   (String) : Group Name
+     * Value (List<Reservation>) : Reservations linked to the group name(key)
+     *
      * @param sc scanner
      */
     public ReservationUtil(Scanner sc) {
@@ -59,7 +60,7 @@ public class ReservationUtil {
 
         List<Reservation> grpReservations = new ArrayList<>();
         boolean alrExists = false;
-        File file = new File(arg+".txt");
+        File file = new File(arg + ".txt");
         String[] data;
         if (file.exists() && !file.isDirectory()) {
             Scanner fileScanner = new Scanner(file);
