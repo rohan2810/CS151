@@ -15,25 +15,10 @@ public class SimpleCalendarTester {
 
         MyCalendar calender = new MyCalendar();
 //        calender.loadEvents(args[0]);
-        LocalDate today = LocalDate.now();
-        calender.printMonth(today, true);
-        calender.attach(new View.MonthViewAndCreate(calender));
-        calender.attach(new View.CalendarDayView(calender));
-
+        View view = new View(calender);
+        calender.attach(view);
         Controller controller = new Controller(calender);
-        View.MonthViewAndCreate monthViewAndCreate = new View.MonthViewAndCreate(calender);
-        View.CalendarDayView dayView = new View.CalendarDayView(calender);
-
-//        frame.add(controller);
-//        frame.add(monthViewAndCreate);
-////        frame.add(dayView);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setVisible(true);
-
         frame.add(controller);
-        frame.add(monthViewAndCreate, BorderLayout.WEST);
-//        frame.add(dayView, BorderLayout.EAST);
-//        frame.add(calendar_header, BorderLayout.NORTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
 

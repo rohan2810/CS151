@@ -144,7 +144,7 @@ public class MyCalendar {
         }
     }
 
-    private Pair<Event, Boolean> saveEvents(String name, LocalDate parsedDate, LocalTime parsedStartTime, LocalTime parsedEndTime) {
+    public Pair<Event, Boolean> saveEvents(String name, LocalDate parsedDate, LocalTime parsedStartTime, LocalTime parsedEndTime) {
         Event event = new Event(name, parsedDate, parsedStartTime, parsedEndTime);
         if ((event.getStartTime() == null || event.getEndTime() == null)) {
             print("Event not created!. Time cannot be null");
@@ -645,6 +645,10 @@ public class MyCalendar {
         for (ChangeListener listener : listeners) {
             listener.stateChanged(new ChangeEvent(this));
         }
+    }
+
+    public HashMap<LocalDate, ArrayList<Event>> getEvents() {
+        return events;
     }
 }
 

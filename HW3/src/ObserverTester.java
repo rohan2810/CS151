@@ -18,6 +18,17 @@ public class ObserverTester {
         data.add(22.0);
         data.add(22.0);
 
+
+
+        data.add(45.6);
+
+        Double d = data.get(0);
+        Double j = d.doubleValue();
+
+
+
+
+
         DataModel model = new DataModel(data);
         TextFrame frame = new TextFrame(model);
         BarFrame barFrame = new BarFrame(model);

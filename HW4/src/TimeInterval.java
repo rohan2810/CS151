@@ -1,3 +1,10 @@
+import javafx.util.Pair;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * TimeInterval is used to check if two events are conflicting.
  *
@@ -18,5 +25,17 @@ public class TimeInterval {
                     (event1.getEndTime().compareTo(event2.getStartTime()) > 0 && event1.getEndTime().compareTo(event2.getEndTime()) < 0);
         }
         return false;
+    }
+
+    public static boolean checkForConflict(Event event, HashMap<LocalDate, ArrayList<Event>> eventList) {
+        Pair<Event, Boolean> conflicts = new Pair<>(null, false);
+        for (Map.Entry<LocalDate, ArrayList<Event>> entry : eventList.entrySet()) {
+            for (Event e : entry.getValue()) {
+                if (TimeInterval.isConflicting(e, event)) {
+                    conflicts = new Pair<>(e, true);
+                }
+            }
+        }
+        return conflicts.getValue();
     }
 }
