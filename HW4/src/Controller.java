@@ -6,17 +6,20 @@ import java.util.GregorianCalendar;
 public class Controller extends JPanel {
 
     public Controller(MyCalendar model) {
+        View view = new View(model);
         JButton previousDayButton = new JButton("<");
         previousDayButton.addActionListener(e -> {
             GregorianCalendar cal = model.getGregorianCalendar();
             cal.add(Calendar.DAY_OF_MONTH, -1);
             model.updateListeners(cal);
+            view.createButtons(0, cal);
         });
         JButton nextDayButton = new JButton(">");
         nextDayButton.addActionListener(e -> {
             GregorianCalendar cal = model.getGregorianCalendar();
             cal.add(Calendar.DAY_OF_MONTH, 1);
             model.updateListeners(cal);
+            view.createButtons(0, cal);
         });
         JButton quitButton = new JButton("Quit");
         quitButton.setPreferredSize(new Dimension(60, 30));

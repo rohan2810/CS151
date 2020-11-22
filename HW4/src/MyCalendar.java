@@ -31,6 +31,7 @@ public class MyCalendar {
     private final HashMap<String, HashMap<LocalDate, ArrayList<Event>>> recurringEvents;
     private final ArrayList<ChangeListener> listeners;
     private GregorianCalendar gregorianCalendar;
+    private LocalDate today;
 
     /**
      * Constructor for the MyCalendar class.
@@ -45,6 +46,14 @@ public class MyCalendar {
         this.recurringEvents = new HashMap<>();
         this.listeners = new ArrayList<>();
         this.gregorianCalendar = new GregorianCalendar();
+    }
+
+    public LocalDate getToday() {
+        return today;
+    }
+
+    public void setToday(LocalDate today) {
+        this.today = today;
     }
 
     /**
@@ -647,9 +656,15 @@ public class MyCalendar {
         }
     }
 
-    public HashMap<LocalDate, ArrayList<Event>> getEvents() {
-        return events;
+    public void update() {
+        for (ChangeListener l : listeners) {
+            l.stateChanged(new ChangeEvent(this));
+        }
     }
+
+//    public HashMap<LocalDate, ArrayList<Event>> getEvents() {
+//        return events.get();
+//    }
 }
 
 
