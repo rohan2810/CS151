@@ -7,7 +7,7 @@ import java.time.LocalTime;
  * This class consists of constructor, and getters and setters.
  *
  * @author Rohan Surana
- * @version 1.0.0 09/22/2020
+ * @version 1.0.0 11/21/2020
  */
 
 public class Event {

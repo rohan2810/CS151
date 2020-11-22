@@ -6,26 +6,33 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public class View extends JPanel implements ChangeListener {
+/**
+ * View for the application.
+ *
+ * @author Rohan Surana
+ * @version 1.0.0 11/21/2020
+ */
+public class View implements ChangeListener {
 
 
     private final MyCalendar model;
     private final JPanel monthView;
     private final ArrayList<JButton> daysButtons = new ArrayList<>();
-    private JPanel dayContainer;
+    private final JTextArea dayView;
+    private JLabel monthName = new JLabel();
     private boolean firstRun;
-    private JTextArea dayView;
     private int lastHighlight;
 
     public View(MyCalendar model) {
 
         firstRun = true;
         this.model = model;
-        lastHighlight = model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH);
+        lastHighlight = this.getCalendar(model).get(Calendar.DAY_OF_MONTH);
         // JTextArea allows to have multiple lines (multiple events)
         dayView = new JTextArea();
         dayView.setPreferredSize(new Dimension(450, 350));
@@ -33,16 +40,15 @@ public class View extends JPanel implements ChangeListener {
         monthView = new JPanel();
         monthView.setLayout(new GridLayout(0, 7));
         monthView.setPreferredSize(new Dimension(300, 300));
-        createButtons(model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH), model.getGregorianCalendar());
-        highlight(model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH) - 1, model.getGregorianCalendar());
+        createButtons(this.getCalendar(model).get(Calendar.DAY_OF_MONTH), this.getCalendar(model));
+        highlight(this.getCalendar(model).get(Calendar.DAY_OF_MONTH) - 1);
 
         JButton createEvent = new JButton("Create");
         createEvent.setPreferredSize(new Dimension(50, 50));
         createEvent.addActionListener(e -> createEventPopup());
         JPanel container = new JPanel();
         container.setLayout(new BorderLayout());
-        JLabel monthName = new JLabel();
-        monthName.setText(Util.getMonths().get(model.getGregorianCalendar().get(Calendar.MONTH)) + " " + model.getGregorianCalendar().get(Calendar.YEAR));
+        monthName.setText(Util.getMonths().get(this.getCalendar(model).get(Calendar.MONTH)) + " " + this.getCalendar(model).get(Calendar.YEAR));
         container.add(monthName, BorderLayout.NORTH);
         container.add(new JLabel("       S             M             T             W             T              F             S"), BorderLayout.CENTER);
         container.add(monthView, BorderLayout.SOUTH);
@@ -50,19 +56,15 @@ public class View extends JPanel implements ChangeListener {
 
         JButton previousDayButton = new JButton("<");
         previousDayButton.addActionListener(e -> {
-            GregorianCalendar cal = model.getGregorianCalendar();
+            GregorianCalendar cal = this.getCalendar(model);
             cal.add(Calendar.DAY_OF_MONTH, -1);
-//            this.createButtons(cal.get(Calendar.DAY_OF_MONTH), cal);
             model.updateListeners(cal);
-//            model.update();
         });
         JButton nextDayButton = new JButton(">");
         nextDayButton.addActionListener(e -> {
-            GregorianCalendar cal = model.getGregorianCalendar();
+            GregorianCalendar cal = this.getCalendar(model);
             cal.add(Calendar.DAY_OF_MONTH, 1);
             model.updateListeners(cal);
-//            this.createButtons(cal.get(Calendar.DAY_OF_MONTH), cal);
-//            model.update();
         });
         JButton quitButton = new JButton("Quit");
         quitButton.setPreferredSize(new Dimension(60, 30));
@@ -71,12 +73,13 @@ public class View extends JPanel implements ChangeListener {
             model.quit();
             Runtime.getRuntime().exit(0);
         });
-        add(previousDayButton);
-        add(nextDayButton);
-        add(quitButton);
-        dateAndDetails(model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH));
+
+        dateAndDetails(this.getCalendar(model).get(Calendar.DAY_OF_MONTH));
 
         JFrame frame = new JFrame();
+        frame.add(previousDayButton);
+        frame.add(nextDayButton);
+        frame.add(quitButton);
         frame.add(container);
         frame.add(dayView);
         frame.add(createEvent);
@@ -92,72 +95,54 @@ public class View extends JPanel implements ChangeListener {
 
     public void createButtons(int i, GregorianCalendar gregorianCalendar) {
 
-//        monthView.removeAll();
         for (int k = 1; k <= gregorianCalendar.getActualMaximum(Calendar.DAY_OF_MONTH); k++) {
             JButton button = new JButton("" + k);
             button.setPreferredSize(new Dimension(4, 4));
 
             button.addActionListener(x -> {
                 String date = button.getText();
-                GregorianCalendar calendar = new GregorianCalendar(model.getGregorianCalendar().get(Calendar.YEAR), model.getGregorianCalendar().get(Calendar.MONTH), model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH));
-                highlight(Integer.parseInt(date) - 1, calendar);
-                model.setToday(LocalDate.of(model.getGregorianCalendar().get(Calendar.YEAR), model.getGregorianCalendar().get(Calendar.MONTH), Integer.parseInt(date)));
+                GregorianCalendar calendar = new GregorianCalendar(this.getCalendar(model).get(Calendar.YEAR), this.getCalendar(model).get(Calendar.MONTH), this.getCalendar(model).get(Calendar.DAY_OF_MONTH));
+                highlight(Integer.parseInt(date) - 1);
                 model.update();
             });
             daysButtons.add(button);
         }
-
-//        for (int j = 1; j < model.getGregorianCalendar().get(Calendar.DAY_OF_WEEK); j++) {
-//            JButton blank = new JButton();
-//            blank.setEnabled(false);
-//            monthView.add(blank);
-//        }
-
-
         for (JButton button : daysButtons) {
             monthView.add(button);
         }
-
-
     }
 
-    public void highlight(int i, GregorianCalendar calendar) {
+    /**
+     * highligh the given date in the calendar.
+     *
+     * @param i
+     */
+    public void highlight(int i) {
         if (i != 0) {
-            System.out.println(daysButtons.get(i).getText());
             daysButtons.get(i).setBorder(new LineBorder(Color.RED, 2));
         }
         if (!firstRun) {
             daysButtons.get(lastHighlight).setBorder(new JButton().getBorder());
         }
         firstRun = false;
-        System.out.println("last highlight " + lastHighlight);
         lastHighlight = i;
 
     }
 
     private void createEventPopup() {
         JFrame createFrame = new JFrame();
+        createFrame.setSize(500, 200);
         createFrame.setTitle("Create New Event");
-        JTextField eventName = new JTextField(30);
+        JTextField eventName = new JTextField(10);
         JTextField startTime = new JTextField(10);
         JTextField endTime = new JTextField(10);
         JButton saveButton = new JButton("SAVE");
+        JLabel to = new JLabel("to");
         saveButton.setSize(50, 50);
         saveButton.addActionListener(e -> {
-            if (eventName.getText().length() == 0) {
-                return;
-            } else if ((startTime.getText().isEmpty() && startTime.getText().length() != 5) &&
-                    (endTime.getText().isEmpty() && endTime.getText().length() != 5)) {
-                JFrame error = new JFrame();
-                error.setLayout(new GridLayout(2, 0));
-                JLabel errorMessage = new JLabel("Please check your start or end time! It should be in HH:mm format");
-                error.add(errorMessage);
-                JButton goBack = new JButton("Go Back");
-                goBack.addActionListener(e1 -> error.dispose());
-                error.add(goBack);
-                error.pack();
-                error.setVisible(true);
-            } else if (model.saveEvents(eventName.getText(), model.getGregorianCalendar().toZonedDateTime().toLocalDate(),
+            if (startTime.getText().isEmpty() && endTime.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please check your start or end time! It should be in HH:mm format");
+            } else if (!model.saveEvents(eventName.getText(), this.getCalendar(model).toZonedDateTime().toLocalDate(),
                     LocalTime.parse(startTime.getText(), DateTimeFormatter.ISO_LOCAL_TIME),
                     LocalTime.parse(endTime.getText(), DateTimeFormatter.ISO_LOCAL_TIME)).getValue()) {
                 JFrame conflictMessage = new JFrame();
@@ -167,49 +152,70 @@ public class View extends JPanel implements ChangeListener {
                 JButton goBack = new JButton("Go Back");
                 goBack.addActionListener(e2 -> conflictMessage.dispose());
                 conflictMessage.add(goBack);
-                conflictMessage.setVisible(true);  // check this order
+                conflictMessage.setVisible(true);
                 conflictMessage.pack();
             } else {
                 createFrame.dispose();
-                model.saveEvents(eventName.getText(), model.getGregorianCalendar().toZonedDateTime().toLocalDate(),
+                Event event = new Event(eventName.getText(), this.getCalendar(model).toZonedDateTime().toLocalDate(),
                         LocalTime.parse(startTime.getText(), DateTimeFormatter.ISO_LOCAL_TIME),
                         LocalTime.parse(endTime.getText(), DateTimeFormatter.ISO_LOCAL_TIME));
-
-
+                model.updateEvent(event);
             }
         });
-        createFrame.setLayout(new GridBagLayout());
+        createFrame.setLayout(new FlowLayout());
         createFrame.add(new JLabel("Event"));
         createFrame.add(eventName);
         createFrame.add(startTime);
+        createFrame.add(to);
         createFrame.add(endTime);
         createFrame.add(saveButton);
-        createFrame.pack();
         createFrame.setVisible(true);
+
     }
 
     private void dateAndDetails(int o) {
-        model.setToday(LocalDate.of(model.getGregorianCalendar().get(Calendar.YEAR), model.getGregorianCalendar().get(Calendar.MONTH), o));
-        int dayOfWeek = model.getGregorianCalendar().get(Calendar.DAY_OF_WEEK);
-        String date = (model.getGregorianCalendar().get(Calendar.MONTH) + "/" + o);
-        String events = "";
-//        if (model.hasEvent(date)) {
-//            events += model.getEvents(date);
-//        }
-        dayView.setText(Util.getDays().get(dayOfWeek - 1) + " " + date + "\n" + events);
+        if (String.valueOf(o).length() == 1) {
+            String newDate = "" + 0 + o;
+            o = Integer.parseInt(newDate);
+        }
+        int dayOfWeek = this.getCalendar(model).get(Calendar.DAY_OF_WEEK);
+        String date = ((this.getCalendar(model).get(Calendar.MONTH) + 1) + "/" + o);
+        String completeDate = ((this.getCalendar(model).get(Calendar.MONTH) + 1) + "/" + o + "/" + this.getCalendar(model).get(Calendar.YEAR));
+        StringBuilder events = new StringBuilder();
+        LocalDate parsedDate = LocalDate.parse(completeDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+        if (model.getEventMap().containsKey(parsedDate)) {
+            ArrayList<Event> list = model.getEventMap().get(parsedDate);
+            Collection<Event> nonDuplicateCollection = list.stream()
+                    .collect(Collectors.toMap(Event::getName, Function.identity(), (a, b) -> a))
+                    .values();
+            List<Event> list1 = new ArrayList<>(nonDuplicateCollection);
+            list1.sort(Comparator.comparing(Event::getStartTime));
+            for (Event event : list1) {
+                events.append(event.getName()).append(" ").append(event.getStartTime()).append(" ").append(event.getEndTime());
+                events.append("\n");
+            }
+        }
+        dayView.setText(Util.getDays().get(dayOfWeek - 1) + " " + date);
+        dayView.append("\n");
+        dayView.append(events.toString());
     }
 
+    /**
+     * return the GregorianCalendar of the current model.
+     *
+     * @param model
+     * @return
+     */
+    public GregorianCalendar getCalendar(MyCalendar model) {
+        return model.getGregorianCalendar();
+    }
 
     @Override
     public void stateChanged(ChangeEvent e) {
-//        daysButtons.clear();
-//        monthView.removeAll();
-//        monthView.validate();
-//        monthView.repaint();
-        dateAndDetails(model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH));
-//        createButtons(model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH), model.getGregorianCalendar());
-        System.out.println("changed" + " " + model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH));
-        highlight(model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH) - 1, model.getGregorianCalendar());
+        monthName.setText(Util.getMonths().get(this.getCalendar(model).get(Calendar.MONTH)) + " " + this.getCalendar(model).get(Calendar.YEAR));
+        dateAndDetails(this.getCalendar(model).get(Calendar.DAY_OF_MONTH));
+        highlight(this.getCalendar(model).get(Calendar.DAY_OF_MONTH) - 1);
 
 
     }

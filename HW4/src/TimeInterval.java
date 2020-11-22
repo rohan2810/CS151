@@ -9,7 +9,7 @@ import java.util.Map;
  * TimeInterval is used to check if two events are conflicting.
  *
  * @author Rohan Surana
- * @version 1.0.0 09/22/2020
+ * @version 1.0.0 11/21/2020
  */
 public class TimeInterval {
     /**

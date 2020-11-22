@@ -3,6 +3,13 @@ import java.awt.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+/**
+ * @Deprecated
+ * Controller class represents the controller for the application.
+ * @author Rohan Surana
+ * @version 1.0.0 11/21/2020
+ */
+@Deprecated
 public class Controller extends JPanel {
 
     public Controller(MyCalendar model) {

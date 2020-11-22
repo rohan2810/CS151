@@ -21,9 +21,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * MyCalendar class handles all the backend logic for this solution.
  * It is responsible to providing the functionality to the user.
+ * This acts as the model for the application.
  *
  * @author Rohan Surana
- * @version 1.0.0 09/22/2020
+ * @version 1.0.0 11/21/2020
  */
 public class MyCalendar {
     private final Scanner sc = null;
@@ -31,7 +32,6 @@ public class MyCalendar {
     private final HashMap<String, HashMap<LocalDate, ArrayList<Event>>> recurringEvents;
     private final ArrayList<ChangeListener> listeners;
     private GregorianCalendar gregorianCalendar;
-    private LocalDate today;
 
     /**
      * Constructor for the MyCalendar class.
@@ -46,14 +46,6 @@ public class MyCalendar {
         this.recurringEvents = new HashMap<>();
         this.listeners = new ArrayList<>();
         this.gregorianCalendar = new GregorianCalendar();
-    }
-
-    public LocalDate getToday() {
-        return today;
-    }
-
-    public void setToday(LocalDate today) {
-        this.today = today;
     }
 
     /**
@@ -641,13 +633,29 @@ public class MyCalendar {
         System.out.println(x);
     }
 
+    /**
+     * attaches the listener to the list of listener
+     *
+     * @param listener
+     */
     public void attach(ChangeListener listener) {
         listeners.add(listener);
     }
 
+    /**
+     * returns the GregorianCalendar from the model.
+     *
+     * @param listener
+     */
     public GregorianCalendar getGregorianCalendar() {
         return gregorianCalendar;
     }
+
+    /**
+     * Update all the listeners given the GregorianCalendar
+     *
+     * @param calendar
+     */
 
     public void updateListeners(GregorianCalendar calendar) {
         gregorianCalendar = calendar;
@@ -656,15 +664,38 @@ public class MyCalendar {
         }
     }
 
+    /**
+     * Update all the listeners
+     */
     public void update() {
         for (ChangeListener l : listeners) {
             l.stateChanged(new ChangeEvent(this));
         }
     }
 
-//    public HashMap<LocalDate, ArrayList<Event>> getEvents() {
-//        return events.get();
-//    }
+    /**
+     * add event to the eventMap and update the ChangeListener
+     *
+     * @param event
+     */
+    public void updateEvent(Event event) {
+        ArrayList<Event> list = events.get(event.getDate());
+        list.add(event);
+        events.put(event.getDate(), list);
+        for (ChangeListener l : listeners) {
+            l.stateChanged(new ChangeEvent(this));
+        }
+    }
+
+    /**
+     * return the event map.
+     *
+     * @return
+     */
+    public HashMap<LocalDate, ArrayList<Event>> getEventMap() {
+        return events;
+    }
+
 }
 
 
