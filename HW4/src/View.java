@@ -19,11 +19,13 @@ public class View extends JPanel implements ChangeListener {
     private JPanel dayContainer;
     private boolean firstRun;
     private JTextArea dayView;
+    private int lastHighlight;
 
     public View(MyCalendar model) {
 
         firstRun = true;
         this.model = model;
+        lastHighlight = model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH);
         // JTextArea allows to have multiple lines (multiple events)
         dayView = new JTextArea();
         dayView.setPreferredSize(new Dimension(450, 350));
@@ -105,11 +107,11 @@ public class View extends JPanel implements ChangeListener {
             daysButtons.add(button);
         }
 
-        for (int j = 1; j < gregorianCalendar.get(Calendar.DAY_OF_WEEK); j++) {
-            JButton blank = new JButton();
+//        for (int j = 1; j < model.getGregorianCalendar().get(Calendar.DAY_OF_WEEK); j++) {
+//            JButton blank = new JButton();
 //            blank.setEnabled(false);
-            monthView.add(blank);
-        }
+//            monthView.add(blank);
+//        }
 
 
         for (JButton button : daysButtons) {
@@ -125,9 +127,11 @@ public class View extends JPanel implements ChangeListener {
             daysButtons.get(i).setBorder(new LineBorder(Color.RED, 2));
         }
         if (!firstRun) {
-            daysButtons.get(i - 1).setBorder(new JButton().getBorder());
+            daysButtons.get(lastHighlight).setBorder(new JButton().getBorder());
         }
         firstRun = false;
+        System.out.println("last highlight " + lastHighlight);
+        lastHighlight = i;
 
     }
 
@@ -200,10 +204,11 @@ public class View extends JPanel implements ChangeListener {
     public void stateChanged(ChangeEvent e) {
 //        daysButtons.clear();
 //        monthView.removeAll();
-        monthView.validate();
-        monthView.repaint();
+//        monthView.validate();
+//        monthView.repaint();
         dateAndDetails(model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH));
 //        createButtons(model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH), model.getGregorianCalendar());
+        System.out.println("changed" + " " + model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH));
         highlight(model.getGregorianCalendar().get(Calendar.DAY_OF_MONTH) - 1, model.getGregorianCalendar());
 
 
